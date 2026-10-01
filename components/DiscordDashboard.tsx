@@ -92,6 +92,9 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
   const [filterPhone, setFilterPhone] = useState(false);
   const [filterEmail, setFilterEmail] = useState(false);
 
+  const [filterNitroDays, setFilterNitroDays] = useState<number>(0);
+  const [filterAgeDays, setFilterAgeDays] = useState<number>(0);
+
   const validateToken = useCallback(async (tokenStr: string) => {
     try {
       const response = await fetch("/api/validate", {
@@ -101,34 +104,14 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
       });
       const data = (await response.json()) as ApiResponse<any>;
       if (!data.success) return { error: data.error };
-      const jobId = data.data.jobId;
-      const hash = data.data.tokenHash;
-
-      const pollJob = setInterval(async () => {
-        try {
-          const statusResponse = await fetch(`/api/status?jobId=${jobId}`);
-          const statusData = (await statusResponse.json()) as ApiResponse<JobResult>;
-          if (statusData.success && statusData.data) {
-            const jobResult = statusData.data;
-            if (jobResult.status === JobStatus.SUCCESS || jobResult.status === JobStatus.FAILED) {
-              clearInterval(pollJob);
-              setTokens((prev) =>
-                prev.map((t) =>
-                  t.jobId === jobId
-                    ? {
-                        ...t,
-                        status: jobResult.status === JobStatus.SUCCESS ? "ready" : "error",
-                        checkResult: jobResult.result,
-                        error: jobResult.error,
-                      }
-                    : t
-                )
-              );
-            }
-          }
-        } catch (err) {}
-      }, 1000);
-      return { jobId, hash };
+      
+      // Since it's synchronous now on the backend, data.data.result already has the result!
+      return { 
+        jobId: data.data.jobId, 
+        hash: data.data.tokenHash, 
+        status: data.data.status, // "ready" or "error"
+        result: data.data.result 
+      };
     } catch (error) {
       return { error: error instanceof Error ? error.message : "Unknown error" };
     }
@@ -144,8 +127,8 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
       return;
     }
 
-    const newTokens: TokenResult[] = [];
-    for (const line of lines) {
+    // Set initial pending state
+    const initialTokens: TokenResult[] = lines.map((line, idx) => {
       const parts = line.split(":");
       let email = "Unknown";
       if (parts.length >= 3) {
@@ -153,18 +136,36 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
       } else if (parts.length === 1 && line.length > 30) {
         email = "Token";
       }
-
-      const result = await validateToken(line);
-      newTokens.push({
-        hash: result.hash || "",
+      return {
+        hash: "",
         email,
         originalLine: line,
-        jobId: result.jobId || "",
-        status: result.error ? "error" : "pending",
-        error: result.error,
-      });
-    }
-    setTokens(newTokens);
+        jobId: `temp-${idx}`,
+        status: "pending"
+      };
+    });
+
+    setTokens(initialTokens);
+
+    // Run all checks concurrently for maximum speed
+    await Promise.all(
+      initialTokens.map(async (tokenObj, idx) => {
+        const result = await validateToken(tokenObj.originalLine);
+        setTokens((prev) => {
+          const newTokens = [...prev];
+          newTokens[idx] = {
+            ...newTokens[idx],
+            hash: result.hash || "",
+            jobId: result.jobId || tokenObj.jobId,
+            status: result.error || result.status === "error" ? "error" : "ready",
+            error: result.error || (result.status === "error" ? "Check failed" : undefined),
+            checkResult: result.result
+          };
+          return newTokens;
+        });
+      })
+    );
+
     setLoading(false);
   };
 
@@ -178,9 +179,29 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
       if (filterAvatar && !t.checkResult?.hasAvatar) return false;
       if (filterPhone && !t.checkResult?.phoneVerified) return false;
       if (filterEmail && !t.checkResult?.emailVerified) return false;
+      
+      if (filterNitroDays > 0) {
+        if (!t.checkResult?.nitroExpiry) return false;
+        const expiry = new Date(t.checkResult.nitroExpiry).getTime();
+        const days = (expiry - Date.now()) / (1000 * 60 * 60 * 24);
+        if (days < filterNitroDays) return false;
+      }
+      if (filterAgeDays > 0) {
+        if (!t.checkResult?.accountAge) return false;
+        let ageDays = 0;
+        const yearsMatch = t.checkResult.accountAge.match(/(\d+)\s*year/);
+        const daysMatch = t.checkResult.accountAge.match(/(\d+)\s*day/);
+        if (yearsMatch) {
+          ageDays = parseInt(yearsMatch[1]) * 365;
+        } else if (daysMatch) {
+          ageDays = parseInt(daysMatch[1]);
+        }
+        if (ageDays < filterAgeDays) return false;
+      }
+
       return true;
     });
-  }, [tokens, filterStatus, filterNitro, filterAvatar, filterPhone, filterEmail]);
+  }, [tokens, filterStatus, filterNitro, filterAvatar, filterPhone, filterEmail, filterNitroDays, filterAgeDays]);
 
   const handleDownload = () => {
     if (filteredTokens.length === 0) return;
@@ -273,10 +294,10 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
               </button>
 
               <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800/80 text-slate-400 text-sm font-medium">
-                Nitro days &ge; <input type="number" defaultValue={0} className="w-8 bg-transparent border border-slate-700 rounded px-1 text-center text-white outline-none" disabled />
+                Nitro days &ge; <input type="number" min={0} value={filterNitroDays} onChange={(e) => setFilterNitroDays(Number(e.target.value) || 0)} className="w-12 bg-transparent border border-slate-700 rounded px-1 text-center text-white outline-none focus:border-blue-500/50" />
               </div>
               <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800/80 text-slate-400 text-sm font-medium">
-                Age days &ge; <input type="number" defaultValue={0} className="w-8 bg-transparent border border-slate-700 rounded px-1 text-center text-white outline-none" disabled />
+                Age days &ge; <input type="number" min={0} value={filterAgeDays} onChange={(e) => setFilterAgeDays(Number(e.target.value) || 0)} className="w-12 bg-transparent border border-slate-700 rounded px-1 text-center text-white outline-none focus:border-blue-500/50" />
               </div>
             </div>
           </div>
