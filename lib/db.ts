@@ -56,7 +56,7 @@ class DatabaseService {
     await kv.setex(
       sessionKey,
       expiryHours * 3600,
-      JSON.stringify(sessionData)
+      sessionData
     );
   }
 
@@ -64,14 +64,14 @@ class DatabaseService {
     tokenHash: string
   ): Promise<{ email: string; checkResult: AccountCheckResult } | null> {
     const sessionKey = `session:${tokenHash}`;
-    const data = await kv.get<string>(sessionKey);
+    const data = await kv.get<any>(sessionKey);
 
     if (!data) {
       return null;
     }
 
     try {
-      const parsed = JSON.parse(data);
+      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
       return {
         email: this.decrypt(parsed.email),
         checkResult: parsed.checkResult,
@@ -97,7 +97,7 @@ class DatabaseService {
       updatedAt: Date.now(),
     };
 
-    await kv.setex(jobKey, 86400, JSON.stringify(jobResult)); // 24 hour TTL
+    await kv.setex(jobKey, 86400, jobResult); // 24 hour TTL, kv automatically stringifies
   }
 
   async updateJobStatus(
@@ -108,10 +108,10 @@ class DatabaseService {
     error?: string
   ): Promise<void> {
     const jobKey = `job:${jobId}`;
-    const existing = await kv.get<string>(jobKey);
+    const existing = await kv.get<any>(jobKey);
 
     if (existing) {
-      const parsed = JSON.parse(existing);
+      const parsed = typeof existing === 'string' ? JSON.parse(existing) : existing;
       const updated: JobResult = {
         ...parsed,
         status,
@@ -121,20 +121,20 @@ class DatabaseService {
         updatedAt: Date.now(),
       };
 
-      await kv.setex(jobKey, 86400, JSON.stringify(updated));
+      await kv.setex(jobKey, 86400, updated);
     }
   }
 
   async getJobStatus(jobId: string): Promise<JobResult | null> {
     const jobKey = `job:${jobId}`;
-    const data = await kv.get<string>(jobKey);
+    const data = await kv.get<any>(jobKey);
 
     if (!data) {
       return null;
     }
 
     try {
-      return JSON.parse(data);
+      return typeof data === 'string' ? JSON.parse(data) : data;
     } catch {
       return null;
     }
@@ -169,20 +169,20 @@ class DatabaseService {
     await kv.setex(
       cacheKey,
       cacheDurationHours * 3600,
-      JSON.stringify(result)
+      result
     );
   }
 
   async getAccountCheckCache(tokenHash: string): Promise<AccountCheckResult | null> {
     const cacheKey = `cache:account:${tokenHash}`;
-    const data = await kv.get<string>(cacheKey);
+    const data = await kv.get<any>(cacheKey);
 
     if (!data) {
       return null;
     }
 
     try {
-      return JSON.parse(data);
+      return typeof data === 'string' ? JSON.parse(data) : data;
     } catch {
       return null;
     }
@@ -256,7 +256,7 @@ class DatabaseService {
         createdAt: Date.now(),
       };
 
-      pipeline.setex(sessionKey, 86400, JSON.stringify(sessionData));
+      pipeline.setex(sessionKey, 86400, sessionData);
     }
 
     await pipeline.exec();
