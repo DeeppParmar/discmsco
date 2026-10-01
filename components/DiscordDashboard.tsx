@@ -64,7 +64,7 @@ export default function DiscordDashboard() {
         const statusResponse = await fetch(`/api/status?jobId=${jobId}`);
         const statusData = (await statusResponse.json()) as ApiResponse<JobResult>;
 
-        if (statusData.success) {
+        if (statusData.success && statusData.data) {
           const jobResult = statusData.data;
 
           if (
@@ -180,7 +180,7 @@ export default function DiscordDashboard() {
         const statusResponse = await fetch(`/api/status?jobId=${jobId}`);
         const statusData = (await statusResponse.json()) as ApiResponse<JobResult>;
 
-        if (statusData.success) {
+        if (statusData.success && statusData.data) {
           const jobResult = statusData.data;
 
           setProcessing((prev) =>
