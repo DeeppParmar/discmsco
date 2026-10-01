@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeft, Settings, Users, Rocket, Activity, BarChart3, Plus, Zap, Server, Shield, Heart, ChevronDown, Loader2, CheckCircle2, XCircle, AlertTriangle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Settings, Users, Rocket, Activity, BarChart3, Plus, Zap, Server, Shield, Heart, ChevronDown, Loader2, CheckCircle2, XCircle, AlertTriangle, RefreshCw, Sparkles, ShieldCheck, ShieldX, Crown, GitBranch } from 'lucide-react';
 
 // ─── Reusable Sub-Components ───────────────────────────────────────────────────
 
@@ -137,9 +137,9 @@ const AccountCard = ({ account }) => (
       </div>
     </div>
     <div className="flex flex-wrap gap-1.5 mb-3">
-      <Badge color={account.has_nitro ? 'indigo' : 'slate'}>{account.has_nitro ? '✦ Nitro' : 'No Nitro'}</Badge>
-      <Badge color={account.verified ? 'emerald' : 'rose'}>{account.verified ? '✓ Verified' : '✗ Unverified'}</Badge>
-      <Badge color={account.boosts_remaining > 0 ? 'amber' : 'slate'}>🚀 {account.boosts_remaining}/2</Badge>
+      <Badge color={account.has_nitro ? 'indigo' : 'slate'}><Crown className="w-3 h-3" /> {account.has_nitro ? 'Nitro' : 'No Nitro'}</Badge>
+      <Badge color={account.verified ? 'emerald' : 'rose'}>{account.verified ? <ShieldCheck className="w-3 h-3" /> : <ShieldX className="w-3 h-3" />} {account.verified ? 'Verified' : 'Unverified'}</Badge>
+      <Badge color={account.boosts_remaining > 0 ? 'amber' : 'slate'}><Rocket className="w-3 h-3" /> {account.boosts_remaining}/2</Badge>
     </div>
     <div className="text-[10px] text-slate-500 pt-2 border-t border-slate-800/40">
       Last: {account.last_activity ? new Date(account.last_activity).toLocaleString() : 'Never'}
@@ -215,7 +215,7 @@ const ExpertUI = ({ onBack }) => {
   const [showConfig, setShowConfig] = useState(false);
 
   // Account form
-  const [formData, setFormData] = useState({ email: '', password: '', token: '' });
+  const [comboInput, setComboInput] = useState(''); // email:password:token format
 
   // Boost form
   const [boostMode, setBoostMode] = useState('2x');         // '2x' | '1x-split'
@@ -285,25 +285,47 @@ const ExpertUI = ({ onBack }) => {
   // ─── Add Account ─────────────────────────────────────────────────────────────
   const handleAddAccount = async (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password || !formData.token) {
-      showToast('All fields are required', 'error');
+    const trimmed = comboInput.trim();
+    if (!trimmed) {
+      showToast('Paste at least one email:password:token combo', 'error');
       return;
     }
 
+    // Parse combos (supports multi-line bulk paste)
+    const lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
+    const combos = [];
+    for (const line of lines) {
+      const parts = line.split(':');
+      if (parts.length < 3) {
+        showToast(`Invalid format: "${line.slice(0, 30)}..." — use email:password:token`, 'error');
+        return;
+      }
+      const email = parts[0];
+      const password = parts[1];
+      const token = parts.slice(2).join(':'); // token may contain colons
+      combos.push({ email, password, token });
+    }
+
     setLoading(true);
+    let added = 0;
     try {
-      const res = await fetch(`${API_URL}/accounts/add`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showToast(`Account verified: ${data.account_id}`);
-        setFormData({ email: '', password: '', token: '' });
+      for (const combo of combos) {
+        const res = await fetch(`${API_URL}/accounts/add`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(combo),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          added++;
+        } else {
+          showToast(`${combo.email}: ${data.error || 'Failed'}`, 'error');
+        }
+      }
+      if (added > 0) {
+        showToast(`${added} account${added > 1 ? 's' : ''} added & verified`);
+        setComboInput('');
         await fetchAccounts();
-      } else {
-        showToast(data.error || 'Failed to add account', 'error');
       }
     } catch (err) {
       showToast(err.message, 'error');
@@ -460,25 +482,19 @@ const ExpertUI = ({ onBack }) => {
                   <h2 className="text-lg font-bold text-white">Add Account</h2>
                 </div>
                 <form onSubmit={handleAddAccount}>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-                    <StyledInput
-                      type="email" placeholder="user@example.com" label="Email"
-                      value={formData.email}
-                      onChange={(e) => setFormData(d => ({ ...d, email: e.target.value }))}
+                  <div className="mb-4">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Account Combos</label>
+                    <textarea
+                      placeholder={"email:password:token\nemail2:password2:token2\n(one combo per line for bulk import)"}
+                      value={comboInput}
+                      onChange={(e) => setComboInput(e.target.value)}
+                      rows={3}
+                      className="w-full bg-[#0b0e14] border border-slate-800/80 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 font-mono focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all duration-300 resize-none"
                     />
-                    <StyledInput
-                      type="password" placeholder="••••••••" label="Password"
-                      value={formData.password}
-                      onChange={(e) => setFormData(d => ({ ...d, password: e.target.value }))}
-                    />
-                    <StyledInput
-                      type="text" placeholder="Discord token" label="Token"
-                      value={formData.token}
-                      onChange={(e) => setFormData(d => ({ ...d, token: e.target.value }))}
-                    />
+                    <p className="text-[10px] text-slate-600 mt-1.5 ml-1">Format: <span className="text-slate-400 font-mono">email:password:token</span> — paste multiple lines for bulk import</p>
                   </div>
                   <AnimatedButton type="submit" loading={loading} className="w-full">
-                    <Shield className="w-4 h-4" /> Add & Verify Account
+                    <Shield className="w-4 h-4" /> Add & Verify {comboInput.trim().split('\n').filter(Boolean).length > 1 ? `${comboInput.trim().split('\n').filter(Boolean).length} Accounts` : 'Account'}
                   </AnimatedButton>
                 </form>
               </GlassCard>
@@ -529,7 +545,10 @@ const ExpertUI = ({ onBack }) => {
                     }`}
                   >
                     {boostMode === '2x' && <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center"><CheckCircle2 className="w-3.5 h-3.5 text-white" /></div>}
-                    <div className="text-2xl mb-2">🚀🚀</div>
+                    <div className="flex gap-1 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center"><Zap className="w-4 h-4 text-indigo-400" /></div>
+                      <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center"><Zap className="w-4 h-4 text-indigo-400" /></div>
+                    </div>
                     <div className="font-bold text-white text-sm mb-1">2x Same Server</div>
                     <div className="text-xs text-slate-500">Both boosts go to a single server. Maximum impact.</div>
                   </button>
@@ -542,7 +561,11 @@ const ExpertUI = ({ onBack }) => {
                     }`}
                   >
                     {boostMode === '1x-split' && <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center"><CheckCircle2 className="w-3.5 h-3.5 text-white" /></div>}
-                    <div className="text-2xl mb-2">🚀 ➜ 🚀</div>
+                    <div className="flex items-center gap-1 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center"><Zap className="w-4 h-4 text-emerald-400" /></div>
+                      <GitBranch className="w-4 h-4 text-slate-600" />
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center"><Zap className="w-4 h-4 text-emerald-400" /></div>
+                    </div>
                     <div className="font-bold text-white text-sm mb-1">1x Split (Two Servers)</div>
                     <div className="text-xs text-slate-500">1 boost each to two different servers. Max coverage.</div>
                   </button>
