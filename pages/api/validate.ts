@@ -60,7 +60,7 @@ export default async function handler(
     }
 
     const cached = await dbService.getAccountCheckCache(parsedToken.hash);
-    if (cached) {
+    if (cached && cached.user?.id) {
       // If the cached result shows the token is invalid/locked, don't return it as valid
       if (cached.status === TokenStatus.LOCKED || cached.isLocked) {
         return res.status(200).json({

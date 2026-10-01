@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from "react";
 import { OperationType, AccountCheckResult, JobStatus, JobResult, ApiResponse } from "@/types";
-import { CheckCircle2, XCircle, Clock, AlertCircle, ShieldCheck, Gift, Zap, Target, ChevronRight, Loader2, Trash2, ArrowLeft, Search, UserPlus, Fingerprint, Lock, ShieldAlert, KeyRound, RotateCcw } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, AlertCircle, ShieldCheck, Gift, Zap, Target, ChevronRight, Loader2, Trash2, ArrowLeft, Search, UserPlus, Fingerprint, Lock, ShieldAlert, KeyRound, RotateCcw, Rocket } from "lucide-react";
 
 interface TokenResult {
   hash: string;
@@ -38,7 +38,8 @@ export default function DiscordDashboard() {
 function HomeView({ onSelect }: { onSelect: (v: string) => void }) {
   const tools = [
     { id: "checker", name: "Token Checker", desc: "Check up to 1,000 tokens — sorted into valid, locked & invalid with full details.", icon: Search, color: "text-blue-400", bg: "bg-blue-500/10", shadow: "shadow-[0_0_15px_rgba(59,130,246,0.5)]" },
-    { id: "quests", name: "Quest Tools", desc: "Enroll and complete quests automatically for your valid tokens to claim rewards.", icon: Target, color: "text-purple-400", bg: "bg-purple-500/10", shadow: "shadow-[0_0_15px_rgba(168,85,247,0.5)]" }
+    { id: "quests", name: "Quest Tools", desc: "Enroll and complete quests automatically for your valid tokens to claim rewards.", icon: Target, color: "text-purple-400", bg: "bg-purple-500/10", shadow: "shadow-[0_0_15px_rgba(168,85,247,0.5)]" },
+    { id: "expert", name: "Expert Mode", desc: "Advanced server boosting orchestrator, rate-limit evasion, and complex bot operations.", icon: Rocket, color: "text-emerald-400", bg: "bg-emerald-500/10", shadow: "shadow-[0_0_15px_rgba(16,185,129,0.5)]", link: "/expert" }
   ];
 
   return (
@@ -52,7 +53,7 @@ function HomeView({ onSelect }: { onSelect: (v: string) => void }) {
             </div>
             <h3 className="text-white font-bold text-sm mb-3">{tool.name}</h3>
             <p className="text-slate-400 text-[11px] leading-relaxed mb-6 flex-1">{tool.desc}</p>
-            <button onClick={() => onSelect(tool.id)} className="w-full py-2 rounded-full border border-slate-700/50 bg-[#0b0e14]/50 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
+            <button onClick={() => tool.link ? window.location.href = tool.link : onSelect(tool.id)} className="w-full py-2 rounded-full border border-slate-700/50 bg-[#0b0e14]/50 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
               Open
             </button>
           </div>

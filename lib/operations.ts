@@ -14,7 +14,7 @@ export async function checkToken(
     // Check cache first
     const cached = await dbService.getAccountCheckCache(tokenHash);
 
-    if (cached) {
+    if (cached && cached.user?.id) {
       await dbService.updateJobStatus(
         jobId,
         JobStatus.SUCCESS,
