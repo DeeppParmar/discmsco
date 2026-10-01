@@ -86,6 +86,7 @@ export default async function handler(
 
     const pendingResult: AccountCheckResult = {
       status: TokenStatus.PENDING,
+      hasAvatar: false,
       hasNitro: false,
       isFlagged: false,
       isLocked: false,

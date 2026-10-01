@@ -39,6 +39,7 @@ export interface TokenValidationResult {
 export interface DiscordUser {
   id: string;
   username: string;
+  avatar: string | null;
   email: string | null;
   phone: string | null;
   verified: boolean;
@@ -58,6 +59,7 @@ export interface DiscordSubscription {
 export interface AccountCheckResult {
   status: TokenStatus;
   user?: DiscordUser;
+  hasAvatar: boolean;
   hasNitro: boolean;
   nitroExpiry?: string;
   nitroBoosts?: number;

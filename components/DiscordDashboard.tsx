@@ -344,6 +344,24 @@ export default function DiscordDashboard() {
                               Nitro
                             </div>
                           )}
+                          {token.checkResult.phoneVerified && (
+                            <div className="flex items-center gap-1.5 text-blue-400">
+                              <span className="w-3.5 h-3.5 flex items-center justify-center border border-blue-400 rounded text-[9px] font-bold">P</span>
+                              Phone
+                            </div>
+                          )}
+                          {token.checkResult.hasAvatar && (
+                            <div className="flex items-center gap-1.5 text-indigo-400">
+                              <span className="w-3.5 h-3.5 flex items-center justify-center border border-indigo-400 rounded-full text-[9px] font-bold">A</span>
+                              Avatar
+                            </div>
+                          )}
+                          {token.checkResult.accountAge && (
+                            <div className="flex items-center gap-1.5 text-zinc-400 col-span-2">
+                              <Clock className="w-3.5 h-3.5" />
+                              Age: {token.checkResult.accountAge}
+                            </div>
+                          )}
                           {token.checkResult.isFlagged && (
                             <div className="flex items-center gap-1.5 text-rose-400 col-span-2 mt-1">
                               <AlertCircle className="w-3.5 h-3.5" />
