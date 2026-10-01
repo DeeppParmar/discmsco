@@ -1,26 +1,8 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
-import {
-  OperationType,
-  AccountCheckResult,
-  JobStatus,
-  JobResult,
-  ApiResponse,
-} from "@/types";
-import { 
-  CheckCircle2, 
-  XCircle, 
-  Clock, 
-  AlertCircle,
-  ShieldCheck,
-  Gift,
-  Zap,
-  Target,
-  ChevronRight,
-  Loader2,
-  Trash2
-} from "lucide-react";
+import React, { useState, useCallback, useMemo } from "react";
+import { OperationType, AccountCheckResult, JobStatus, JobResult, ApiResponse } from "@/types";
+import { CheckCircle2, XCircle, Clock, AlertCircle, ShieldCheck, Gift, Zap, Target, ChevronRight, Loader2, Trash2, ArrowLeft, Search, UserPlus, Fingerprint, Lock, ShieldAlert, KeyRound, RotateCcw } from "lucide-react";
 
 interface TokenResult {
   hash: string;
@@ -31,38 +13,99 @@ interface TokenResult {
   error?: string;
 }
 
-interface ProcessingJob {
-  jobId: string;
-  tokenHash: string;
-  operation: OperationType;
-  status: JobStatus;
-  progress: number;
-  result?: any;
-  error?: string;
+export default function DiscordDashboard() {
+  const [activeView, setActiveView] = useState<string | null>(null);
+
+  return (
+    <div className="min-h-screen bg-[#0b0e14] text-slate-300 font-sans selection:bg-indigo-500/30">
+      {!activeView ? (
+        <HomeView onSelect={setActiveView} />
+      ) : activeView === "checker" ? (
+        <TokenCheckerView onBack={() => setActiveView(null)} />
+      ) : activeView === "quests" ? (
+        <QuestView onBack={() => setActiveView(null)} />
+      ) : (
+        <div className="p-12 text-center">
+          <h2 className="text-2xl text-white mb-4">Tool in development</h2>
+          <button onClick={() => setActiveView(null)} className="px-4 py-2 bg-indigo-600 rounded-lg text-white font-medium hover:bg-indigo-500 transition">Go Back</button>
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default function DiscordDashboard() {
+function HomeView({ onSelect }: { onSelect: (v: string) => void }) {
+  const tools = [
+    { id: "checker", name: "Token Checker", desc: "Check up to 1,000 tokens — sorted into valid, locked & invalid with full details.", icon: Search, color: "text-blue-400", bg: "bg-blue-500/10", shadow: "shadow-[0_0_15px_rgba(59,130,246,0.5)]" },
+    { id: "quests", name: "Quest Tools", desc: "Enroll and complete quests automatically for your valid tokens to claim rewards.", icon: Target, color: "text-purple-400", bg: "bg-purple-500/10", shadow: "shadow-[0_0_15px_rgba(168,85,247,0.5)]" },
+    { id: "boost", name: "Boost", desc: "Boost any server from our Nitro stock or your own tokens.", icon: Zap, color: "text-purple-400", bg: "bg-purple-500/10", shadow: "shadow-[0_0_15px_rgba(168,85,247,0.5)]" },
+    { id: "join", name: "Join", desc: "Add members to any server — our account stock or your own tokens.", icon: UserPlus, color: "text-emerald-400", bg: "bg-emerald-500/10", shadow: "shadow-[0_0_15px_rgba(16,185,129,0.5)]" },
+    { id: "humanize", name: "Humanize", desc: "Give accounts a real profile — avatar, name, bio, banner, pronouns & HypeSquad.", icon: Fingerprint, color: "text-amber-400", bg: "bg-amber-500/10", shadow: "shadow-[0_0_15px_rgba(245,158,11,0.5)]" },
+    { id: "password", name: "Change Password", desc: "Change an account's password using its current one.", icon: Lock, color: "text-rose-400", bg: "bg-rose-500/10", shadow: "shadow-[0_0_15px_rgba(244,63,94,0.5)]" },
+    { id: "2fa", name: "Add 2FA", desc: "Lock accounts with a TOTP authenticator.", icon: ShieldAlert, color: "text-rose-500", bg: "bg-rose-500/10", shadow: "shadow-[0_0_15px_rgba(225,29,72,0.5)]" },
+    { id: "recovery", name: "Recovery", desc: "Log back into rotated or logged-out accounts.", icon: KeyRound, color: "text-cyan-400", bg: "bg-cyan-500/10", shadow: "shadow-[0_0_15px_rgba(34,211,238,0.5)]" },
+    { id: "reset", name: "Reset Password", desc: "Reset an account's password through its mailbox.", icon: RotateCcw, color: "text-indigo-400", bg: "bg-indigo-500/10", shadow: "shadow-[0_0_15px_rgba(99,102,241,0.5)]" }
+  ];
+
+  return (
+    <div className="max-w-7xl mx-auto p-6 md:p-12">
+      <div className="flex items-center justify-center mb-12 gap-4">
+        <div className="flex flex-wrap justify-center gap-3 text-[13px] font-semibold">
+          <div className="flex items-center gap-3 bg-[#151924] px-4 py-2 rounded-full border border-slate-800">
+            <span className="text-blue-400 font-bold flex items-center gap-1.5"><Fingerprint className="w-4 h-4"/> ayano</span>
+            <span className="text-slate-300">0.4 USD</span>
+            <button className="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/30 hover:bg-emerald-500/20 transition">Deposit</button>
+          </div>
+          <button className="bg-[#151924] text-slate-300 px-5 py-2 rounded-full border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
+            Profile
+          </button>
+          <button className="bg-[#151924] text-slate-300 px-5 py-2 rounded-full border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
+            History
+          </button>
+          <button className="bg-[#151924] text-rose-400 px-5 py-2 rounded-full border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
+            Disconnect
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+        {tools.map(tool => (
+          <div key={tool.id} className="bg-[#151924] border border-slate-800/80 rounded-2xl p-6 flex flex-col items-center text-center hover:border-slate-700 hover:bg-[#1a1f2e] transition-all group">
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 ${tool.bg} ${tool.color} ${tool.shadow}`}>
+              <tool.icon className="w-7 h-7" />
+            </div>
+            <h3 className="text-white font-bold text-sm mb-3">{tool.name}</h3>
+            <p className="text-slate-400 text-[11px] leading-relaxed mb-6 flex-1">{tool.desc}</p>
+            <button onClick={() => onSelect(tool.id)} className="w-full py-2 rounded-full border border-slate-700/50 bg-[#0b0e14]/50 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
+              Open
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TokenCheckerView({ onBack }: { onBack: () => void }) {
   const [tokenInput, setTokenInput] = useState("");
   const [tokens, setTokens] = useState<TokenResult[]>([]);
-  const [processing, setProcessing] = useState<ProcessingJob[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<TokenResult | null>(null);
+
+  // Filters
+  const [filterStatus, setFilterStatus] = useState<string>("All");
+  const [filterNitro, setFilterNitro] = useState(false);
+  const [filterAvatar, setFilterAvatar] = useState(false);
+  const [filterPhone, setFilterPhone] = useState(false);
 
   const validateToken = useCallback(async (tokenStr: string) => {
-    setLoading(true);
     try {
       const response = await fetch("/api/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: tokenStr }),
       });
-
       const data = (await response.json()) as ApiResponse<any>;
-
-      if (!data.success) {
-        return { error: data.error };
-      }
-
+      if (!data.success) return { error: data.error };
       const jobId = data.data.jobId;
       const hash = data.data.tokenHash;
 
@@ -70,14 +113,9 @@ export default function DiscordDashboard() {
         try {
           const statusResponse = await fetch(`/api/status?jobId=${jobId}`);
           const statusData = (await statusResponse.json()) as ApiResponse<JobResult>;
-
           if (statusData.success && statusData.data) {
             const jobResult = statusData.data;
-
-            if (
-              jobResult.status === JobStatus.SUCCESS ||
-              jobResult.status === JobStatus.FAILED
-            ) {
+            if (jobResult.status === JobStatus.SUCCESS || jobResult.status === JobStatus.FAILED) {
               clearInterval(pollJob);
               setTokens((prev) =>
                 prev.map((t) =>
@@ -91,52 +129,31 @@ export default function DiscordDashboard() {
                     : t
                 )
               );
-              
-              setTokens(currentTokens => {
-                const updatedToken = currentTokens.find(t => t.jobId === jobId);
-                if (updatedToken && updatedToken.status === "ready") {
-                  setSelectedToken(current => current ? current : updatedToken);
-                }
-                return currentTokens;
-              });
             }
           }
-        } catch (err) {
-          console.error("Polling error", err);
-        }
+        } catch (err) {}
       }, 1000);
-
       return { jobId, hash };
     } catch (error) {
-      return {
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    } finally {
-      setLoading(false);
+      return { error: error instanceof Error ? error.message : "Unknown error" };
     }
   }, []);
 
   const handlePaste = async () => {
-    const lines = tokenInput
-      .split("\n")
-      .map((l) => l.trim())
-      .filter((l) => l && l.includes(":"));
-
+    setLoading(true);
+    const lines = tokenInput.split("\n").map((l) => l.trim()).filter((l) => l && l.includes(":"));
     if (lines.length === 0) {
       alert("No valid token format found. Use: email:password:token");
+      setLoading(false);
       return;
     }
 
-    setTokens([]);
-    setSelectedToken(null);
     const newTokens: TokenResult[] = [];
-
     for (const line of lines) {
       const parts = line.split(":");
       if (parts.length >= 3) {
         const [email, password, token] = parts;
         const result = await validateToken(line);
-
         newTokens.push({
           hash: result.hash || "",
           email,
@@ -146,404 +163,164 @@ export default function DiscordDashboard() {
         });
       }
     }
-
     setTokens(newTokens);
     setTokenInput("");
+    setLoading(false);
   };
 
-  const executeOperation = async (
-    token: TokenResult,
-    operation: OperationType,
-    questId?: string
-  ) => {
-    if (!selectedToken) return;
-
-    try {
-      const response = await fetch("/api/execute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tokenHash: token.hash,
-          operation,
-          questId,
-          token: token.email,
-          email: token.email,
-        }),
-      });
-
-      const data = (await response.json()) as ApiResponse<any>;
-
-      if (!data.success) {
-        alert(`Error: ${data.error}`);
-        return;
+  const filteredTokens = useMemo(() => {
+    return tokens.filter(t => {
+      if (filterStatus !== "All") {
+        if (filterStatus === "Valid" && t.status !== "ready") return false;
+        if (filterStatus === "Error" && t.status === "ready") return false; // Error handles pending/error/validating
       }
-
-      const jobId = data.data.jobId;
-
-      setProcessing((prev) => [
-        {
-          jobId,
-          tokenHash: token.hash,
-          operation,
-          status: JobStatus.PENDING,
-          progress: 0,
-        },
-        ...prev,
-      ]);
-
-      const pollJob = setInterval(async () => {
-        try {
-          const statusResponse = await fetch(`/api/status?jobId=${jobId}`);
-          const statusData = (await statusResponse.json()) as ApiResponse<JobResult>;
-
-          if (statusData.success && statusData.data) {
-            const jobResult = statusData.data;
-
-            setProcessing((prev) =>
-              prev.map((p) =>
-                p.jobId === jobId
-                  ? {
-                      ...p,
-                      status: jobResult.status,
-                      progress: jobResult.progress || p.progress,
-                      result: jobResult.result,
-                      error: jobResult.error,
-                    }
-                  : p
-              )
-            );
-
-            if (
-              jobResult.status === JobStatus.SUCCESS ||
-              jobResult.status === JobStatus.FAILED
-            ) {
-              clearInterval(pollJob);
-            }
-          }
-        } catch (err) {
-          console.error("Polling error", err);
-        }
-      }, 1000);
-    } catch (error) {
-      alert(
-        `Error executing operation: ${error instanceof Error ? error.message : "Unknown"}`
-      );
-    }
-  };
-
-  const StatusIcon = ({ status }: { status: TokenResult["status"] }) => {
-    switch (status) {
-      case "ready":
-        return <CheckCircle2 className="w-5 h-5 text-emerald-500" />;
-      case "error":
-        return <XCircle className="w-5 h-5 text-rose-500" />;
-      case "validating":
-      case "pending":
-        return <Loader2 className="w-5 h-5 text-zinc-500 animate-spin" />;
-    }
-  };
+      if (filterNitro && !t.checkResult?.hasNitro) return false;
+      if (filterAvatar && !t.checkResult?.hasAvatar) return false;
+      if (filterPhone && !t.checkResult?.phoneVerified) return false;
+      return true;
+    });
+  }, [tokens, filterStatus, filterNitro, filterAvatar, filterPhone]);
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 selection:bg-indigo-500/30 font-sans">
-      <div className="max-w-6xl mx-auto p-6 md:p-12">
-        <div className="mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3 flex items-center gap-3">
-            <Zap className="w-8 h-8 text-indigo-500" />
-            Discord Multi-Tool
-          </h1>
-          <p className="text-zinc-400 max-w-2xl text-lg">
-            A minimal, serverless interface to validate and manage your Discord accounts with precision.
-          </p>
-        </div>
+    <div className="max-w-5xl mx-auto p-6 md:p-12">
+      <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition font-medium text-sm bg-[#151924] px-4 py-2 rounded-full border border-slate-800 hover:bg-slate-800 w-fit">
+        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+      </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          <div className="lg:col-span-5 space-y-8">
-            <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-6 shadow-sm backdrop-blur-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold tracking-tight">Add Accounts</h2>
-              </div>
-              <textarea
-                value={tokenInput}
-                onChange={(e) => setTokenInput(e.target.value)}
-                placeholder="email:password:token"
-                className="w-full h-32 bg-zinc-950/50 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all resize-none font-mono"
-              />
-              <button
-                onClick={handlePaste}
-                disabled={loading || !tokenInput.trim()}
-                className="w-full mt-4 bg-zinc-100 text-zinc-900 hover:bg-white disabled:bg-zinc-800 disabled:text-zinc-500 px-6 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm"
+      <div className="flex items-center gap-5 mb-10">
+        <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+          <Search className="w-7 h-7" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-1">Token Checker</h1>
+          <p className="text-slate-400 text-sm">Validate and inspect Discord tokens.</p>
+        </div>
+      </div>
+
+      <div className="bg-[#151924] border border-slate-800 rounded-3xl p-8 mb-8 shadow-xl">
+        <textarea
+          value={tokenInput}
+          onChange={(e) => setTokenInput(e.target.value)}
+          placeholder="email:password:token"
+          className="w-full h-40 bg-[#0b0e14] border border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500/50 transition-all resize-none font-mono mb-6"
+        />
+        <button
+          onClick={handlePaste}
+          disabled={loading || !tokenInput.trim()}
+          className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white disabled:text-slate-500 px-6 py-3.5 rounded-2xl font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.2)] disabled:shadow-none"
+        >
+          {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Checking...</> : "Start Checking"}
+        </button>
+      </div>
+
+      {/* Filter Bar mimicking user screenshot */}
+      <div className="bg-[#151924] border border-slate-800 rounded-3xl p-8 mb-8 shadow-xl flex flex-col gap-6">
+        <div className="flex flex-wrap items-center gap-6 text-sm font-semibold">
+          <span className="text-slate-500 w-14 text-right">Status</span>
+          <div className="flex flex-wrap bg-[#0b0e14] rounded-full p-1 border border-slate-800/80">
+            {["All", "Valid", "Locked", "Invalid", "Error"].map(s => (
+              <button 
+                key={s}
+                onClick={() => setFilterStatus(s)}
+                className={`px-5 py-2 rounded-full transition-all ${filterStatus === s ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'}`}
               >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Validating...
-                  </>
-                ) : (
-                  "Validate Tokens"
-                )}
+                {s}
               </button>
-            </div>
-
-            <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-6 shadow-sm backdrop-blur-sm flex flex-col h-[500px]">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold tracking-tight flex items-center gap-2">
-                  Accounts
-                  <span className="bg-zinc-800 text-zinc-400 text-xs py-0.5 px-2 rounded-full font-mono">
-                    {tokens.length}
-                  </span>
-                </h2>
-              </div>
-
-              {tokens.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-zinc-500 space-y-4">
-                  <AlertCircle className="w-8 h-8 opacity-50" />
-                  <p className="text-sm">No accounts added yet</p>
-                </div>
-              ) : (
-                <div className="space-y-3 overflow-y-auto pr-2 custom-scrollbar flex-1">
-                  {tokens.map((token) => (
-                    <div
-                      key={token.jobId}
-                      onClick={() => setSelectedToken(token)}
-                      className={`group p-4 rounded-xl cursor-pointer transition-all duration-200 border ${
-                        selectedToken?.jobId === token.jobId
-                          ? "bg-indigo-500/10 border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.1)]"
-                          : "bg-zinc-950/50 border-zinc-800/80 hover:bg-zinc-800/50 hover:border-zinc-700"
-                      }`}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1 min-w-0 pr-4">
-                          <p className={`font-medium text-sm truncate ${selectedToken?.jobId === token.jobId ? 'text-indigo-300' : 'text-zinc-200'}`}>
-                            {token.email}
-                          </p>
-                          <p className="text-xs text-zinc-500 font-mono mt-1 truncate">
-                            {token.jobId.slice(0, 12)}...
-                          </p>
-                        </div>
-                        <div className="shrink-0 mt-0.5">
-                           <StatusIcon status={token.status} />
-                        </div>
-                      </div>
-
-                      {token.error && (
-                        <div className="mt-3 text-xs text-rose-400 bg-rose-500/10 px-3 py-2 rounded-lg border border-rose-500/20">
-                          {token.error}
-                        </div>
-                      )}
-
-                      {token.checkResult && (
-                        <div className="mt-4 pt-4 border-t border-zinc-800/50 grid grid-cols-2 gap-2 text-xs">
-                          <div className="flex items-center gap-1.5 text-zinc-400">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            {token.checkResult.user?.username || "Unknown"}
-                          </div>
-                          {token.checkResult.hasNitro && (
-                            <div className="flex items-center gap-1.5 text-fuchsia-400">
-                              <Gift className="w-3.5 h-3.5" />
-                              Nitro
-                            </div>
-                          )}
-                          {token.checkResult.phoneVerified && (
-                            <div className="flex items-center gap-1.5 text-blue-400">
-                              <span className="w-3.5 h-3.5 flex items-center justify-center border border-blue-400 rounded text-[9px] font-bold">P</span>
-                              Phone
-                            </div>
-                          )}
-                          {token.checkResult.hasAvatar && (
-                            <div className="flex items-center gap-1.5 text-indigo-400">
-                              <span className="w-3.5 h-3.5 flex items-center justify-center border border-indigo-400 rounded-full text-[9px] font-bold">A</span>
-                              Avatar
-                            </div>
-                          )}
-                          {token.checkResult.accountAge && (
-                            <div className="flex items-center gap-1.5 text-zinc-400 col-span-2">
-                              <Clock className="w-3.5 h-3.5" />
-                              Age: {token.checkResult.accountAge}
-                            </div>
-                          )}
-                          {token.checkResult.isFlagged && (
-                            <div className="flex items-center gap-1.5 text-rose-400 col-span-2 mt-1">
-                              <AlertCircle className="w-3.5 h-3.5" />
-                              Account Flagged
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="lg:col-span-7 space-y-8">
-            
-            <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-6 shadow-sm backdrop-blur-sm min-h-[220px] relative overflow-hidden">
-              {!selectedToken ? (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-500 bg-zinc-950/40 backdrop-blur-[2px] z-10 rounded-2xl">
-                  <ShieldCheck className="w-10 h-10 mb-3 opacity-20" />
-                  <p className="text-sm">Select an account to view operations</p>
-                </div>
-              ) : selectedToken.status !== "ready" ? (
-                 <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-500 bg-zinc-950/40 backdrop-blur-[2px] z-10 rounded-2xl">
-                  <Clock className="w-10 h-10 mb-3 opacity-20" />
-                  <p className="text-sm">Account is not ready for operations</p>
-                </div>
-              ) : null}
-
-              <h2 className="text-lg font-semibold tracking-tight mb-6 flex items-center justify-between">
-                <span>Operations</span>
-                {selectedToken && (
-                  <span className="text-xs font-mono text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
-                    {selectedToken.email}
-                  </span>
-                )}
-              </h2>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button
-                  onClick={() => executeOperation(selectedToken!, OperationType.CHECK)}
-                  className="flex items-center justify-between p-4 bg-zinc-950 border border-zinc-800 rounded-xl hover:bg-zinc-800 hover:border-zinc-700 transition-all text-sm group"
-                >
-                  <span className="flex items-center gap-3 text-zinc-300 group-hover:text-white transition-colors">
-                    <ShieldCheck className="w-4 h-4 text-zinc-500 group-hover:text-emerald-400 transition-colors" />
-                    Check Account
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400" />
-                </button>
-
-                <button
-                  onClick={() => executeOperation(selectedToken!, OperationType.CHECK_NITRO)}
-                  className="flex items-center justify-between p-4 bg-zinc-950 border border-zinc-800 rounded-xl hover:bg-zinc-800 hover:border-zinc-700 transition-all text-sm group"
-                >
-                  <span className="flex items-center gap-3 text-zinc-300 group-hover:text-white transition-colors">
-                    <Gift className="w-4 h-4 text-zinc-500 group-hover:text-fuchsia-400 transition-colors" />
-                    Check Nitro
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400" />
-                </button>
-
-                <button
-                  onClick={() => {
-                    const questId = prompt("Enter Quest ID to complete:");
-                    if (questId) executeOperation(selectedToken!, OperationType.COMPLETE_QUEST, questId);
-                  }}
-                  className="flex items-center justify-between p-4 bg-zinc-950 border border-zinc-800 rounded-xl hover:bg-zinc-800 hover:border-zinc-700 transition-all text-sm group"
-                >
-                  <span className="flex items-center gap-3 text-zinc-300 group-hover:text-white transition-colors">
-                    <Target className="w-4 h-4 text-zinc-500 group-hover:text-blue-400 transition-colors" />
-                    Complete Quest
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400" />
-                </button>
-
-                <button
-                  onClick={() => {
-                    const questId = prompt("Enter Quest ID to claim:");
-                    if (questId) executeOperation(selectedToken!, OperationType.CLAIM_QUEST, questId);
-                  }}
-                  className="flex items-center justify-between p-4 bg-zinc-950 border border-zinc-800 rounded-xl hover:bg-zinc-800 hover:border-zinc-700 transition-all text-sm group"
-                >
-                  <span className="flex items-center gap-3 text-zinc-300 group-hover:text-white transition-colors">
-                    <Zap className="w-4 h-4 text-zinc-500 group-hover:text-amber-400 transition-colors" />
-                    Claim Quest
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400" />
-                </button>
-              </div>
-            </div>
-
-            <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-6 shadow-sm backdrop-blur-sm h-[430px] flex flex-col">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold tracking-tight flex items-center gap-2">
-                  Activity Log
-                </h2>
-                {processing.length > 0 && (
-                   <button 
-                     onClick={() => setProcessing([])} 
-                     className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1"
-                   >
-                     <Trash2 className="w-3 h-3" /> Clear
-                   </button>
-                )}
-              </div>
-
-              {processing.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-zinc-600 space-y-4">
-                  <Clock className="w-8 h-8 opacity-30" />
-                  <p className="text-sm">No recent activity</p>
-                </div>
-              ) : (
-                <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-1">
-                  {processing.map((job) => (
-                    <div key={job.jobId} className="bg-zinc-950/80 border border-zinc-800/50 rounded-xl p-4">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex items-center gap-3">
-                           {job.status === JobStatus.SUCCESS ? (
-                             <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                             </div>
-                           ) : job.status === JobStatus.FAILED ? (
-                             <div className="w-8 h-8 rounded-full bg-rose-500/10 flex items-center justify-center border border-rose-500/20">
-                               <XCircle className="w-4 h-4 text-rose-400" />
-                             </div>
-                           ) : (
-                             <div className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                               <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
-                             </div>
-                           )}
-                           
-                          <div>
-                            <p className="font-medium text-sm text-zinc-200 capitalize">
-                              {job.operation.replace('_', ' ').toLowerCase()}
-                            </p>
-                            <p className="text-xs text-zinc-500 font-mono mt-0.5">
-                              {job.jobId.slice(0, 18)}...
-                            </p>
-                          </div>
-                        </div>
-                        <span className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full ${
-                          job.status === JobStatus.SUCCESS ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
-                          job.status === JobStatus.FAILED ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" :
-                          "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"
-                        }`}>
-                          {job.status}
-                        </span>
-                      </div>
-
-                      {(job.status === JobStatus.RUNNING || job.status === JobStatus.PENDING) && (
-                        <div className="w-full bg-zinc-900 rounded-full h-1.5 mb-2 overflow-hidden">
-                          <div
-                            className="bg-indigo-500 h-full rounded-full transition-all duration-500 ease-out relative"
-                            style={{ width: `${job.progress || 5}%` }}
-                          >
-                             <div className="absolute top-0 right-0 bottom-0 left-0 bg-white/20 animate-pulse"></div>
-                          </div>
-                        </div>
-                      )}
-
-                      {job.error && (
-                        <div className="mt-3 text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 px-3 py-2.5 rounded-lg">
-                          {job.error}
-                        </div>
-                      )}
-
-                      {job.result && job.status === JobStatus.SUCCESS && (
-                        <div className="mt-3 text-[11px] bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-zinc-300 font-mono">
-                          <pre className="overflow-x-auto custom-scrollbar">
-                            {JSON.stringify(job.result, null, 2)}
-                          </pre>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            
+            ))}
           </div>
         </div>
+        
+        <div className="flex flex-wrap items-center gap-6 text-sm font-semibold">
+          <span className="text-slate-500 w-14 text-right">Trial</span>
+          <div className="flex flex-wrap bg-[#0b0e14] rounded-full p-1 border border-slate-800/80">
+            {["2 Weeks", "1 Month", "3 Months", "Discount", "None"].map(s => (
+               <button key={s} className="px-5 py-2 rounded-full text-slate-500 opacity-50 cursor-not-allowed">
+                 {s}
+               </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-4 mt-2 ml-[5.5rem]">
+          <button onClick={() => setFilterNitro(!filterNitro)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterNitro ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' : 'bg-[#0b0e14] border-slate-800 text-slate-400 hover:border-slate-700'}`}>
+            <Gift className="w-4 h-4" /> Nitro
+          </button>
+          <button onClick={() => setFilterAvatar(!filterAvatar)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterAvatar ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' : 'bg-[#0b0e14] border-slate-800 text-slate-400 hover:border-slate-700'}`}>
+            <Fingerprint className="w-4 h-4" /> Avatar
+          </button>
+          <button onClick={() => setFilterPhone(!filterPhone)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterPhone ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' : 'bg-[#0b0e14] border-slate-800 text-slate-400 hover:border-slate-700'}`}>
+            <Search className="w-4 h-4" /> Phone
+          </button>
+          <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800 text-slate-400 text-sm font-medium">
+            Nitro days &ge; <input type="number" defaultValue={0} className="w-8 bg-transparent text-center text-white outline-none" disabled />
+          </div>
+          <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800 text-slate-400 text-sm font-medium">
+            Age days &ge; <input type="number" defaultValue={0} className="w-8 bg-transparent text-center text-white outline-none" disabled />
+          </div>
+        </div>
+      </div>
+
+      {tokens.length > 0 && (
+        <div className="bg-[#151924] border border-slate-800 rounded-3xl p-8 shadow-xl">
+          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+            Results 
+            <span className="bg-[#0b0e14] text-slate-400 px-3 py-1 rounded-full text-sm border border-slate-800">{filteredTokens.length}</span>
+          </h2>
+          <div className="space-y-4">
+            {filteredTokens.map((token, idx) => (
+              <div key={idx} className="p-5 rounded-2xl border bg-[#0b0e14] border-slate-800/80 hover:border-slate-700 transition-colors">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-[15px] text-slate-200">{token.email}</p>
+                  </div>
+                  <div className="shrink-0 flex items-center gap-3">
+                     {token.status === "ready" ? <span className="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-emerald-500/20 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5"/> Valid</span> :
+                     token.status === "error" ? <span className="bg-rose-500/10 text-rose-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-rose-500/20 flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5"/> Error</span> :
+                     <span className="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-500/20 flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin"/> Checking</span>}
+                  </div>
+                </div>
+                {token.error && (
+                  <div className="mt-4 text-sm text-rose-400 bg-rose-500/10 px-4 py-3 rounded-xl border border-rose-500/20">
+                    {token.error}
+                  </div>
+                )}
+                {token.checkResult && (
+                  <div className="mt-5 pt-5 border-t border-slate-800/80 flex flex-wrap gap-4 text-sm font-medium">
+                    <span className="text-slate-300 font-bold">@{token.checkResult.user?.username}</span>
+                    {token.checkResult.hasNitro && <span className="text-fuchsia-400 flex items-center gap-1.5 bg-fuchsia-500/10 px-2.5 py-1 rounded-lg"><Gift className="w-4 h-4"/> Nitro</span>}
+                    {token.checkResult.phoneVerified && <span className="text-blue-400 flex items-center gap-1.5 bg-blue-500/10 px-2.5 py-1 rounded-lg"><span className="w-4 h-4 flex items-center justify-center border border-blue-400 rounded text-[10px] font-bold">P</span> Phone</span>}
+                    {token.checkResult.hasAvatar && <span className="text-indigo-400 flex items-center gap-1.5 bg-indigo-500/10 px-2.5 py-1 rounded-lg"><span className="w-4 h-4 flex items-center justify-center border border-indigo-400 rounded-full text-[10px] font-bold">A</span> Avatar</span>}
+                    {token.checkResult.accountAge && <span className="text-slate-400 flex items-center gap-1.5 bg-slate-800 px-2.5 py-1 rounded-lg"><Clock className="w-4 h-4"/> {token.checkResult.accountAge}</span>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function QuestView({ onBack }: { onBack: () => void }) {
+  return (
+    <div className="max-w-5xl mx-auto p-6 md:p-12">
+      <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition font-medium text-sm bg-[#151924] px-4 py-2 rounded-full border border-slate-800 hover:bg-slate-800 w-fit">
+        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+      </button>
+      <div className="flex items-center gap-5 mb-10">
+        <div className="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+          <Target className="w-7 h-7" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-1">Quest Tools</h1>
+          <p className="text-slate-400 text-sm">Enroll and claim Discord quests automatically.</p>
+        </div>
+      </div>
+      <div className="bg-[#151924] border border-slate-800 rounded-3xl p-16 text-center shadow-xl">
+        <Target className="w-16 h-16 text-slate-700 mx-auto mb-6" />
+        <h2 className="text-xl text-white font-bold mb-3">Quest Automator</h2>
+        <p className="text-slate-500 max-w-md mx-auto">This section is reserved for bulk Quest completing logic. Please check valid tokens first before proceeding to claim quests.</p>
       </div>
     </div>
   );
