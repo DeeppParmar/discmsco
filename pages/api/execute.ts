@@ -6,6 +6,16 @@ import { checkToken, completeQuest, claimQuest, checkNitro } from "@/lib/operati
 import { OperationType, ApiResponse } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 
+// Quest completion takes ~30-60+ real seconds due to real-time video simulation
+// Increase API route timeout to 5 minutes
+export const config = {
+  api: {
+    responseLimit: false,
+    bodyParser: true,
+  },
+  maxDuration: 300,
+};
+
 interface ExecuteRequest {
   tokenHash: string;
   operation: OperationType;
@@ -148,6 +158,7 @@ export default async function handler(
           jobId,
           operation,
           status: "error",
+          error: e instanceof Error ? e.message : "Operation failed",
         },
         statusCode: 200,
         timestamp: Date.now(),

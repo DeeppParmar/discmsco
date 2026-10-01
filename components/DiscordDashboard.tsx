@@ -43,24 +43,6 @@ function HomeView({ onSelect }: { onSelect: (v: string) => void }) {
 
   return (
     <div className="max-w-7xl mx-auto p-6 md:p-12">
-      <div className="flex items-center justify-center mb-12 gap-4">
-        <div className="flex flex-wrap justify-center gap-3 text-[13px] font-semibold">
-          <div className="flex items-center gap-3 bg-[#151924] px-4 py-2 rounded-full border border-slate-800">
-            <span className="text-blue-400 font-bold flex items-center gap-1.5"><Fingerprint className="w-4 h-4"/> ayano</span>
-            <span className="text-slate-300">0.4 USD</span>
-            <button className="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/30 hover:bg-emerald-500/20 transition">Deposit</button>
-          </div>
-          <button className="bg-[#151924] text-slate-300 px-5 py-2 rounded-full border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
-            Profile
-          </button>
-          <button className="bg-[#151924] text-slate-300 px-5 py-2 rounded-full border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
-            History
-          </button>
-          <button className="bg-[#151924] text-rose-400 px-5 py-2 rounded-full border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
-            Disconnect
-          </button>
-        </div>
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
         {tools.map(tool => (

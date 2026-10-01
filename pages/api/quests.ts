@@ -30,6 +30,7 @@ export default async function handler(
 
   try {
     const quests = await discordService.getQuests(token);
+    const now = new Date();
 
     // Map quests to a clean format - handle various Discord response structures
     const mapped = quests.map((q: any) => {
@@ -65,8 +66,28 @@ export default async function handler(
       const completed = !!(q.user_status?.completed_at);
       const claimed = !!(q.user_status?.claimed_at);
 
-      // Expiry
+      // Expiry — check multiple paths
       const expiresAt = q.config?.expires_at || q.expires_at || null;
+
+      // Start date
+      const startsAt = q.config?.starts_at || q.starts_at || null;
+
+      // Check if quest is currently active (not expired and has started)
+      let isExpired = false;
+      if (expiresAt) {
+        const expiryDate = new Date(expiresAt);
+        isExpired = expiryDate < now;
+      }
+
+      let hasStarted = true;
+      if (startsAt) {
+        const startDate = new Date(startsAt);
+        hasStarted = startDate <= now;
+      }
+
+      // Check if quest is targetted/available to user
+      // Discord returns quests with a `target_completed` field for unavailable ones
+      const isTargetCompleted = q.target_completed === true;
 
       return {
         id,
@@ -77,14 +98,30 @@ export default async function handler(
         completed,
         claimed,
         expiresAt,
+        isExpired,
+        hasStarted,
+        isTargetCompleted,
       };
-    }).filter((q: any) => q.id); // Only include quests with valid IDs
+    })
+    // FILTER: Only show quests the user can actually interact with
+    .filter((q: any) => {
+      // Must have a valid ID
+      if (!q.id) return false;
+      // Must not be expired
+      if (q.isExpired) return false;
+      // Must have started
+      if (!q.hasStarted) return false;
+      // Must not be a target-completed quest (already fully done on Discord's side)
+      if (q.isTargetCompleted) return false;
+      return true;
+    });
 
     return res.status(200).json({
       success: true,
       data: {
         quests: mapped,
         rawCount: quests.length,
+        filteredCount: mapped.length,
       },
       statusCode: 200,
       timestamp: Date.now(),

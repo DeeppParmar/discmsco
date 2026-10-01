@@ -335,14 +335,34 @@ class DiscordService {
   async completeQuest(token: string, questId: string): Promise<boolean> {
     const session = await this.createSession(token);
 
-    // Progress loop - simulate video watching
-    // Use 2-second increments to ensure we cover every second of required duration
-    // Most quests need 30 seconds, but some need more, so we go up to 600
-    let timestamp = 0;
+    // ── Real-time video progress simulation ──
+    // Discord's anti-cheat compares the reported timestamp against the actual
+    // wall-clock time elapsed since the first progress report. If timestamps
+    // advance faster than real-time, progress is capped (typically at ~33%).
+    //
+    // Strategy:
+    //   • Record the wall-clock start time
+    //   • Every iteration, calculate `elapsed = (Date.now() - startTime) / 1000`
+    //   • Send `{ timestamp: floor(elapsed) }` so reported time ≤ real time
+    //   • Wait 5 seconds between requests (so each covers ~5s of video)
+    //   • Continue until Discord returns `completed_at` or we exceed 120s
+    //
+    // For a 30-second quest this takes ~35 real seconds (7 requests).
+    // For a 60-second quest this takes ~65 real seconds (13 requests).
+
+    const TICK_INTERVAL_MS = 5000;   // 5 seconds between API calls
+    const MAX_DURATION_S = 120;       // give up after 2 minutes
+    const startTime = Date.now();
     let completed = false;
     let consecutiveErrors = 0;
 
-    while (!completed && timestamp <= 600) {
+    while (!completed) {
+      const elapsedMs = Date.now() - startTime;
+      const elapsedS = Math.floor(elapsedMs / 1000);
+
+      // Safety: stop after MAX_DURATION_S of real wall-clock time
+      if (elapsedS > MAX_DURATION_S) break;
+
       try {
         const progressResponse = await this.makeRequest(
           session,
@@ -352,7 +372,7 @@ class DiscordService {
             ...DEFAULT_BACKOFF,
             maxRetries: 2,
           },
-          { timestamp }
+          { timestamp: elapsedS }
         );
 
         if (progressResponse.status_code === 401) {
@@ -363,41 +383,38 @@ class DiscordService {
         consecutiveErrors = 0;
 
         const progressData = await progressResponse.json();
-        if (progressData.completed_at) {
-          completed = true;
-          break;
-        }
 
-        // Check if response indicates the quest is already done
-        if (progressData.claimed_at || progressData.completed) {
+        // Check all possible completion indicators
+        if (
+          progressData.completed_at ||
+          progressData.claimed_at ||
+          progressData.completed === true
+        ) {
           completed = true;
           break;
         }
       } catch (error) {
-        // If it's an auth error, re-throw immediately
         if (error instanceof DiscordAPIError && error.statusCode === 401) {
           throw error;
         }
-        // For other errors, allow a few retries before giving up
         consecutiveErrors++;
         if (consecutiveErrors >= 5) {
           throw new DiscordAPIError(
             500,
-            `Quest progress failed after ${consecutiveErrors} consecutive errors at ${timestamp}s`,
+            `Quest progress failed after ${consecutiveErrors} consecutive errors at ${elapsedS}s`,
             false
           );
         }
       }
 
-      timestamp += 2;
-      // Small delay to simulate real video watching pace
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // Wait real seconds before next tick
+      await new Promise((resolve) => setTimeout(resolve, TICK_INTERVAL_MS));
     }
 
     if (!completed) {
       throw new DiscordAPIError(
         500,
-        "Quest progress timed out after 600 seconds",
+        `Quest progress timed out after ${MAX_DURATION_S} seconds`,
         false
       );
     }
