@@ -2,7 +2,7 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { dbService } from "@/lib/db";
-import { inngest } from "@/lib/inngest";
+import { checkToken, completeQuest, claimQuest, checkNitro } from "@/lib/operations";
 import { OperationType, ApiResponse } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -29,7 +29,6 @@ export default async function handler(
 
   const { tokenHash, operation, questId, token, email } = req.body as ExecuteRequest;
 
-  // Validation
   if (!tokenHash || typeof tokenHash !== "string") {
     return res.status(400).json({
       success: false,
@@ -58,7 +57,6 @@ export default async function handler(
   }
 
   try {
-    // Gate 1: Check rate limit
     const rateLimitCheck = await dbService.checkRateLimit(tokenHash, 60);
     if (!rateLimitCheck.allowed) {
       return res.status(429).json({
@@ -69,13 +67,11 @@ export default async function handler(
       });
     }
 
-    // Gate 2: Get cached account check result
     const session = await dbService.getTokenSession(tokenHash);
     if (!session) {
       return res.status(400).json({
         success: false,
-        error:
-          "Token not validated. Please validate token first",
+        error: "Token not validated. Please validate token first",
         statusCode: 400,
         timestamp: Date.now(),
       });
@@ -83,7 +79,6 @@ export default async function handler(
 
     const accountCheck = session.checkResult;
 
-    // Gate 3: Check if account is valid for operations
     if (accountCheck.isLocked) {
       return res.status(403).json({
         success: false,
@@ -102,7 +97,6 @@ export default async function handler(
       });
     }
 
-    // Gate 4: Prevent quest operations on unverified accounts
     if (
       (operation === OperationType.COMPLETE_QUEST ||
         operation === OperationType.CLAIM_QUEST) &&
@@ -110,14 +104,12 @@ export default async function handler(
     ) {
       return res.status(403).json({
         success: false,
-        error:
-          "Account email not verified. Quest operations require verified email",
+        error: "Account email not verified. Quest operations require verified email",
         statusCode: 403,
         timestamp: Date.now(),
       });
     }
 
-    // Gate 5: Validate quest ID if provided
     if (
       (operation === OperationType.COMPLETE_QUEST ||
         operation === OperationType.CLAIM_QUEST) &&
@@ -133,62 +125,29 @@ export default async function handler(
 
     const jobId = uuidv4();
 
-    // Create job
     await dbService.createJob(jobId, {
       operation,
     });
 
-    // Queue operation based on type
+    // Execute synchronously
     if (operation === OperationType.CHECK) {
-      await inngest.send({
-        name: "discord/check.token",
-        data: {
-          jobId,
-          tokenHash,
-          token,
-          email,
-        },
-      });
+      await checkToken(jobId, tokenHash, token, email);
     } else if (operation === OperationType.COMPLETE_QUEST) {
-      await inngest.send({
-        name: "discord/complete.quest",
-        data: {
-          jobId,
-          tokenHash,
-          token,
-          questId: questId!,
-        },
-      });
+      await completeQuest(jobId, tokenHash, token, questId!);
     } else if (operation === OperationType.CLAIM_QUEST) {
-      await inngest.send({
-        name: "discord/claim.quest",
-        data: {
-          jobId,
-          tokenHash,
-          token,
-          questId: questId!,
-        },
-      });
+      await claimQuest(jobId, tokenHash, token, questId!);
     } else if (operation === OperationType.CHECK_NITRO) {
-      await inngest.send({
-        name: "discord/check.nitro",
-        data: {
-          jobId,
-          tokenHash,
-          token,
-          email,
-        },
-      });
+      await checkNitro(jobId, tokenHash, token, email);
     }
 
-    return res.status(202).json({
+    return res.status(200).json({
       success: true,
       data: {
         jobId,
         operation,
-        status: "pending",
+        status: "success",
       },
-      statusCode: 202,
+      statusCode: 200,
       timestamp: Date.now(),
     });
   } catch (error) {

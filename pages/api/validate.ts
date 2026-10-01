@@ -2,9 +2,8 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { validateToken } from "@/lib/validation";
-import { discordService } from "@/lib/discord-service";
 import { dbService } from "@/lib/db";
-import { inngest } from "@/lib/inngest";
+import { checkToken } from "@/lib/operations";
 import {
   TokenStatus,
   AccountCheckResult,
@@ -27,7 +26,6 @@ export default async function handler(
 
   const { token } = req.body as { token?: string };
 
-  // Validation: Check if token is provided
   if (!token || typeof token !== "string") {
     return res.status(400).json({
       success: false,
@@ -38,7 +36,6 @@ export default async function handler(
   }
 
   try {
-    // Gate 1: Format validation
     const validationResult = validateToken(token);
     if (!validationResult.isValid) {
       return res.status(400).json({
@@ -52,7 +49,6 @@ export default async function handler(
     const parsedToken = validationResult.format!;
     const jobId = uuidv4();
 
-    // Gate 2: Rate limit check
     const rateLimitCheck = await dbService.checkRateLimit(parsedToken.hash);
     if (!rateLimitCheck.allowed) {
       return res.status(429).json({
@@ -63,10 +59,8 @@ export default async function handler(
       });
     }
 
-    // Gate 3: Check cache first
     const cached = await dbService.getAccountCheckCache(parsedToken.hash);
     if (cached) {
-      // Store session with cached result
       await dbService.storeTokenSession(
         parsedToken.hash,
         parsedToken.email,
@@ -86,23 +80,10 @@ export default async function handler(
       });
     }
 
-    // Gate 4: Create job and queue check
     await dbService.createJob(jobId, {
       operation: "CHECK",
     });
 
-    // Queue the check operation
-    await inngest.send({
-      name: "discord/check.token",
-      data: {
-        jobId,
-        tokenHash: parsedToken.hash,
-        token: parsedToken.token,
-        email: parsedToken.email,
-      },
-    });
-
-    // Store session immediately
     const pendingResult: AccountCheckResult = {
       status: TokenStatus.PENDING,
       hasNitro: false,
@@ -119,14 +100,22 @@ export default async function handler(
       pendingResult
     );
 
-    return res.status(202).json({
+    // Run synchronously instead of inngest
+    // We start it and don't await so we can return the 202 to the frontend, 
+    // BUT since it's Vercel, background promises might die. However, since the user 
+    // polls the job, if they want synchronous we can just await it.
+    // Awaiting it is safer on Vercel.
+    const result = await checkToken(jobId, parsedToken.hash, parsedToken.token, parsedToken.email);
+
+    return res.status(200).json({
       success: true,
       data: {
         jobId,
         tokenHash: parsedToken.hash,
-        status: "pending",
+        status: "ready",
+        result: result.checkResult
       },
-      statusCode: 202,
+      statusCode: 200,
       timestamp: Date.now(),
     });
   } catch (error) {
