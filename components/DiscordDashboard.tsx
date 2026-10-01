@@ -531,15 +531,15 @@ function QuestView({ onBack }: { onBack: () => void }) {
 
   const handleRunQuests = async () => {
     if (selectedQuests.length === 0) return;
-    const eligible = tokens.filter(t => t.status === "valid");
+    const eligible = tokens.filter(t => t.status === "valid" || t.status === "success" || t.status === "error");
     if (eligible.length === 0) return;
 
     setRunning(true);
 
     // Mark eligible tokens as running and init quest results
     setTokens(prev => prev.map(t => {
-      if (t.status !== "valid") return t;
-      const questResults: Record<string, { status: "pending" | "running" | "success" | "error"; error?: string }> = {};
+      if (t.status !== "valid" && t.status !== "success" && t.status !== "error") return t;
+      const questResults = { ...(t.questResults || {}) } as Record<string, { status: "pending" | "running" | "success" | "error"; error?: string }>;
       selectedQuests.forEach(q => { questResults[q.id] = { status: "pending" }; });
       return { ...t, status: "running" as const, questResults };
     }));
@@ -547,7 +547,7 @@ function QuestView({ onBack }: { onBack: () => void }) {
     // For each token, run all selected quests sequentially
     await Promise.all(
       tokens.map(async (tokenObj, tokenIdx) => {
-        if (tokenObj.status !== "valid" && tokenObj.status !== "running") return;
+        if (tokenObj.status !== "valid" && tokenObj.status !== "success" && tokenObj.status !== "error" && tokenObj.status !== "running") return;
 
         let allSuccess = true;
         for (const quest of selectedQuests) {
