@@ -110,6 +110,7 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
         jobId: data.data.jobId, 
         hash: data.data.tokenHash, 
         status: data.data.status, // "ready" or "error"
+        error: data.data.error,
         result: data.data.result 
       };
     } catch (error) {
@@ -173,7 +174,9 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
     return tokens.filter(t => {
       if (filterStatus !== "All") {
         if (filterStatus === "Valid" && t.status !== "ready") return false;
-        if (filterStatus === "Error" && t.status === "ready") return false; 
+        if (filterStatus === "Locked" && t.error !== "Account locked or suspended") return false;
+        if (filterStatus === "Invalid" && t.error !== "Invalid token") return false;
+        if (filterStatus === "Error" && (t.status === "ready" || t.error === "Account locked or suspended" || t.error === "Invalid token")) return false; 
       }
       if (filterNitro && !t.checkResult?.hasNitro) return false;
       if (filterAvatar && !t.checkResult?.hasAvatar) return false;
@@ -319,30 +322,32 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
 
             <div className="space-y-4">
               {filteredTokens.map((token, idx) => (
-                <div key={idx} className="p-5 rounded-2xl border bg-[#0b0e14] border-slate-800/80 hover:border-slate-700 transition-colors">
-                  <div className="flex justify-between items-center">
+                <div key={idx} style={{ animationDelay: `${idx * 0.05}s`, animationFillMode: 'both' }} className="group p-5 rounded-2xl border bg-[#0b0e14]/60 backdrop-blur-md border-slate-800/80 hover:border-blue-500/30 hover:bg-[#0b0e14] transition-all duration-300 hover:shadow-[0_0_30px_-5px_rgba(59,130,246,0.15)] relative overflow-hidden animate-fadeIn">
+                  <div className={`absolute left-0 top-0 bottom-0 w-[3px] opacity-0 group-hover:opacity-100 transition-opacity ${token.status === 'ready' ? 'bg-gradient-to-b from-emerald-400 to-emerald-600' : token.status === 'error' ? 'bg-gradient-to-b from-rose-400 to-rose-600' : 'bg-gradient-to-b from-blue-400 to-blue-600'}`}></div>
+                  <div className="flex justify-between items-center relative z-10">
                     <div>
-                      <p className="font-semibold text-[15px] text-slate-200">{token.email}</p>
+                      <p className="font-semibold text-[15px] text-slate-200 tracking-wide font-mono group-hover:text-white transition-colors">{token.email}</p>
                     </div>
                     <div className="shrink-0 flex items-center gap-3">
-                       {token.status === "ready" ? <span className="text-emerald-500 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide border border-emerald-500/30 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5"/> Valid</span> :
-                       token.status === "error" ? <span className="text-rose-500 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide border border-rose-500/30 flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5"/> Error</span> :
-                       <span className="text-blue-400 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-500/30 flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin"/> Checking</span>}
+                       {token.status === "ready" ? <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)] flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5"/> Valid</span> :
+                       token.status === "error" ? <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-rose-500/20 shadow-[0_0_10px_rgba(225,29,72,0.1)] flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5"/> Error</span> :
+                       <span className="text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)] flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin"/> Checking</span>}
                     </div>
                   </div>
                   {token.error && (
-                    <div className="mt-4 text-sm text-rose-400 bg-rose-500/5 px-4 py-3 rounded-xl border border-rose-500/20">
-                      {token.error}
+                    <div className="mt-4 text-sm text-rose-300 bg-rose-500/10 px-4 py-3 rounded-xl border border-rose-500/20 flex items-start gap-2 relative z-10">
+                      <XCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                      <span>{token.error}</span>
                     </div>
                   )}
                   {token.checkResult && (
-                    <div className="mt-5 pt-5 border-t border-slate-800/80 flex flex-wrap gap-4 text-sm font-medium">
-                      <span className="text-slate-300 font-bold">@{token.checkResult.user?.username}</span>
-                      {token.checkResult.accountAge && <span className="text-slate-300 flex items-center gap-1.5 bg-[#151924] px-2.5 py-1 rounded-md border border-slate-800"><Clock className="w-4 h-4 text-slate-400"/> {token.checkResult.accountAge}</span>}
-                      {token.checkResult.hasNitro && <span className="text-fuchsia-400 flex items-center gap-1.5 bg-fuchsia-500/10 px-2.5 py-1 rounded-md"><Gift className="w-4 h-4"/> Nitro</span>}
-                      {token.checkResult.phoneVerified && <span className="text-blue-400 flex items-center gap-1.5 bg-blue-500/10 px-2.5 py-1 rounded-md"> Phone</span>}
-                      {token.checkResult.emailVerified && <span className="text-emerald-400 flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-1 rounded-md"> Email Verified</span>}
-                      {token.checkResult.hasAvatar && <span className="text-indigo-400 flex items-center gap-1.5 bg-indigo-500/10 px-2.5 py-1 rounded-md"> Avatar</span>}
+                    <div className="mt-5 pt-5 border-t border-slate-800/60 flex flex-wrap gap-4 text-sm font-medium relative z-10">
+                      <span className="text-slate-200 font-bold bg-[#1a2133] px-3 py-1.5 rounded-lg border border-slate-700/50 shadow-sm">@{token.checkResult.user?.username}</span>
+                      {token.checkResult.accountAge && <span className="text-slate-300 flex items-center gap-1.5 bg-[#151924] px-3 py-1.5 rounded-lg border border-slate-700/50 hover:bg-slate-800 transition-colors cursor-default"><Clock className="w-4 h-4 text-slate-400"/> {token.checkResult.accountAge}</span>}
+                      {token.checkResult.hasNitro && <span className="text-fuchsia-300 flex items-center gap-1.5 bg-fuchsia-500/15 px-3 py-1.5 rounded-lg border border-fuchsia-500/20 shadow-[0_0_10px_rgba(217,70,239,0.1)]"><Gift className="w-4 h-4 text-fuchsia-400"/> Nitro</span>}
+                      {token.checkResult.phoneVerified && <span className="text-blue-300 flex items-center gap-1.5 bg-blue-500/15 px-3 py-1.5 rounded-lg border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)]"><Search className="w-4 h-4 text-blue-400"/> Phone</span>}
+                      {token.checkResult.emailVerified && <span className="text-emerald-300 flex items-center gap-1.5 bg-emerald-500/15 px-3 py-1.5 rounded-lg border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]"><CheckCircle2 className="w-4 h-4 text-emerald-400"/> Email</span>}
+                      {token.checkResult.hasAvatar && <span className="text-indigo-300 flex items-center gap-1.5 bg-indigo-500/15 px-3 py-1.5 rounded-lg border border-indigo-500/20 shadow-[0_0_10px_rgba(99,102,241,0.1)]"><Fingerprint className="w-4 h-4 text-indigo-400"/> Avatar</span>}
                     </div>
                   )}
                 </div>

@@ -106,13 +106,14 @@ export default async function handler(
       result = await checkToken(jobId, parsedToken.hash, parsedToken.token, parsedToken.email);
     } catch (e) {
       // Job is already marked as FAILED in DB. We return 200 so the frontend 
-      // polling logic can gracefully pick up the failed status.
+      // can gracefully pick up the failed status without throwing a 500.
       return res.status(200).json({
         success: true,
         data: {
           jobId,
           tokenHash: parsedToken.hash,
           status: "error",
+          error: e instanceof Error ? e.message : "Unknown error"
         },
         statusCode: 200,
         timestamp: Date.now(),
