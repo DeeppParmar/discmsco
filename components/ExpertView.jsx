@@ -2,8 +2,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { ArrowLeft } from 'lucide-react';
 
-const ExpertUI = () => {
+const ExpertUI = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('accounts');
   const [accounts, setAccounts] = useState([]);
   const [sessions, setSessions] = useState([]);
@@ -163,29 +164,32 @@ const ExpertUI = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: '#e2e8f0', fontFamily: 'monospace', fontSize: '13px' }}>
+    <div className="max-w-5xl mx-auto p-6 md:p-12 font-sans">
+      <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition font-medium text-sm bg-[#151924] px-4 py-2 rounded-full border border-slate-800 hover:bg-slate-800 w-fit">
+        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+      </button>
+
       {/* Header */}
-      <div style={{ borderBottom: '2px solid #334155', padding: '15px', backgroundColor: '#1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="flex items-center gap-5 mb-10">
+        <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+          <span className="text-2xl">🚀</span>
+        </div>
         <div>
-          <h1 style={{ margin: '0', fontSize: '18px', color: '#60a5fa' }}>🔥 Expert Discord Booster</h1>
-          <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#94a3b8' }}>Enterprise-Grade | Rate-Limited | Token Protected</p>
+          <h1 className="text-2xl font-bold text-white mb-1">Expert Discord Booster</h1>
+          <p className="text-slate-400 text-sm">Enterprise-Grade | Rate-Limited | Token Protected</p>
         </div>
         <button
           onClick={() => setShowConfig(!showConfig)}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: showConfig ? '#3b82f6' : '#475569',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '12px',
-            fontWeight: 'bold'
-          }}
+          className={`ml-auto px-4 py-2 rounded-lg text-white font-medium text-sm transition ${
+            showConfig ? 'bg-blue-600 hover:bg-blue-500' : 'bg-slate-700 hover:bg-slate-600'
+          }`}
         >
-          ⚙️ Config
+          {showConfig ? 'Hide Config' : '⚙️ Config'}
         </button>
       </div>
+
+      <div style={{ backgroundColor: '#0f172a', color: '#e2e8f0', fontFamily: 'monospace', fontSize: '13px', borderRadius: '16px', overflow: 'hidden', border: '1px solid #1e293b' }}>
+
 
       {/* Config Panel */}
       {showConfig && (
@@ -594,6 +598,7 @@ const ExpertUI = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };
