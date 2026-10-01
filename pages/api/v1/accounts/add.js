@@ -1,21 +1,5 @@
 // pages/api/v1/accounts/add.js - Add account with verification
-import { AccountManager } from '../../../../lib/accountManager.js';
-
-// Global instance (shared across requests)
-let accountManager = null;
-
-function getAccountManager() {
-  if (!accountManager) {
-    accountManager = new AccountManager({
-      maxAccountsPerSession: 200,
-      verifyOnAdd: true,
-      enableHealthMonitoring: true,
-      autoLockUnhealthy: true,
-      healthThreshold: 40
-    });
-  }
-  return accountManager;
-}
+import { getAccountManager } from '../../../../lib/expertSingleton.js';
 
 export default async function handler(req, res) {
   // CORS
