@@ -71,6 +71,7 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
   const [tokenInput, setTokenInput] = useState("");
   const [tokens, setTokens] = useState<TokenResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
   // Filters
   const [filterStatus, setFilterStatus] = useState<string>("All");
@@ -81,6 +82,7 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
 
   const [filterNitroDays, setFilterNitroDays] = useState<number>(0);
   const [filterAgeDays, setFilterAgeDays] = useState<number>(0);
+  const [filterAge30, setFilterAge30] = useState(false);
 
   const validateToken = useCallback(async (tokenStr: string) => {
     try {
@@ -104,6 +106,12 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
       return { error: error instanceof Error ? error.message : "Unknown error" };
     }
   }, []);
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedToken(text);
+    setTimeout(() => setCopiedToken(null), 2000);
+  };
 
   const handlePaste = async () => {
     if (!tokenInput.trim()) return;
@@ -170,13 +178,7 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
       if (filterPhone && !t.checkResult?.phoneVerified) return false;
       if (filterEmail && !t.checkResult?.emailVerified) return false;
       
-      if (filterNitroDays > 0) {
-        if (!t.checkResult?.nitroExpiry) return false;
-        const expiry = new Date(t.checkResult.nitroExpiry).getTime();
-        const days = (expiry - Date.now()) / (1000 * 60 * 60 * 24);
-        if (days < filterNitroDays) return false;
-      }
-      if (filterAgeDays > 0) {
+      if (filterAge30) {
         if (!t.checkResult?.accountAge) return false;
         let ageDays = 0;
         const yearsMatch = t.checkResult.accountAge.match(/(\d+)\s*year/);
@@ -186,12 +188,12 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
         } else if (daysMatch) {
           ageDays = parseInt(daysMatch[1]);
         }
-        if (ageDays < filterAgeDays) return false;
+        if (ageDays < 30) return false;
       }
 
       return true;
     });
-  }, [tokens, filterStatus, filterNitro, filterAvatar, filterPhone, filterEmail, filterNitroDays, filterAgeDays]);
+  }, [tokens, filterStatus, filterNitro, filterAvatar, filterPhone, filterEmail, filterAge30]);
 
   const handleDownload = () => {
     if (filteredTokens.length === 0) return;
@@ -258,17 +260,6 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
               </div>
             </div>
             
-            <div className="flex flex-wrap items-center gap-6 text-sm font-semibold">
-              <span className="text-slate-500 w-14 text-right">Trial</span>
-              <div className="flex flex-wrap bg-[#0b0e14] rounded-full p-1 border border-slate-800/80">
-                {["2 Weeks", "1 Month", "3 Months", "Discount", "None"].map(s => (
-                  <button key={s} className="px-5 py-2 rounded-full text-slate-500 border border-transparent opacity-50 cursor-not-allowed">
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             <div className="flex flex-wrap items-center gap-4 mt-2 ml-[5.5rem]">
               <button onClick={() => setFilterNitro(!filterNitro)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterNitro ? 'bg-[#1a2133] border-[#2a3449] text-white' : 'bg-[#0b0e14] border-slate-800/80 text-slate-400 hover:border-slate-700'}`}>
                 <Gift className="w-4 h-4" /> Nitro
@@ -282,13 +273,9 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
               <button onClick={() => setFilterEmail(!filterEmail)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterEmail ? 'bg-[#1a2133] border-[#2a3449] text-white' : 'bg-[#0b0e14] border-slate-800/80 text-slate-400 hover:border-slate-700'}`}>
                 <CheckCircle2 className="w-4 h-4" /> Email
               </button>
-
-              <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800/80 text-slate-400 text-sm font-medium">
-                Nitro days &ge; <input type="number" min={0} value={filterNitroDays} onChange={(e) => setFilterNitroDays(Number(e.target.value) || 0)} className="w-12 bg-transparent border border-slate-700 rounded px-1 text-center text-white outline-none focus:border-blue-500/50" />
-              </div>
-              <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800/80 text-slate-400 text-sm font-medium">
-                Age days &ge; <input type="number" min={0} value={filterAgeDays} onChange={(e) => setFilterAgeDays(Number(e.target.value) || 0)} className="w-12 bg-transparent border border-slate-700 rounded px-1 text-center text-white outline-none focus:border-blue-500/50" />
-              </div>
+              <button onClick={() => setFilterAge30(!filterAge30)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterAge30 ? 'bg-[#1a2133] border-[#2a3449] text-white' : 'bg-[#0b0e14] border-slate-800/80 text-slate-400 hover:border-slate-700'}`}>
+                <Clock className="w-4 h-4" /> Age &ge; 30d
+              </button>
             </div>
           </div>
 
@@ -309,32 +296,38 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
 
             <div className="space-y-4">
               {filteredTokens.map((token, idx) => (
-                <div key={idx} style={{ animationDelay: `${idx * 0.05}s`, animationFillMode: 'both' }} className="group p-5 rounded-2xl border bg-[#0b0e14]/60 backdrop-blur-md border-slate-800/80 hover:border-blue-500/30 hover:bg-[#0b0e14] transition-all duration-300 hover:shadow-[0_0_30px_-5px_rgba(59,130,246,0.15)] relative overflow-hidden animate-fadeIn">
+                <div key={idx} onClick={() => handleCopy(token.originalLine)} style={{ animationDelay: `${idx * 0.05}s`, animationFillMode: 'both' }} className="group p-4 rounded-xl border bg-[#0b0e14]/60 backdrop-blur-md border-slate-800/80 hover:border-blue-500/30 hover:bg-[#0b0e14] transition-all duration-300 relative overflow-hidden animate-fadeIn cursor-pointer">
                   <div className={`absolute left-0 top-0 bottom-0 w-[3px] opacity-0 group-hover:opacity-100 transition-opacity ${token.status === 'ready' ? 'bg-gradient-to-b from-emerald-400 to-emerald-600' : token.status === 'error' ? 'bg-gradient-to-b from-rose-400 to-rose-600' : 'bg-gradient-to-b from-blue-400 to-blue-600'}`}></div>
-                  <div className="flex justify-between items-center relative z-10">
-                    <div>
-                      <p className="font-semibold text-[15px] text-slate-200 tracking-wide font-mono group-hover:text-white transition-colors">{token.email}</p>
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 relative z-10">
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <p className="font-semibold text-sm text-slate-200 truncate font-mono flex items-center gap-2">
+                        {token.email}
+                        {copiedToken === token.originalLine ? <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-sans tracking-wide uppercase">Copied!</span> : <span className="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-sans tracking-wide uppercase opacity-0 group-hover:opacity-100 transition-opacity">Copy</span>}
+                      </p>
+                      {token.checkResult?.user?.username && (
+                        <span className="text-slate-500 text-sm hidden md:inline-block">@{token.checkResult.user.username}</span>
+                      )}
                     </div>
-                    <div className="shrink-0 flex items-center gap-3">
-                       {token.status === "ready" ? <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)] flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5"/> Valid</span> :
-                       token.status === "error" ? <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-rose-500/20 shadow-[0_0_10px_rgba(225,29,72,0.1)] flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5"/> Error</span> :
-                       <span className="text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)] flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin"/> Checking</span>}
+                    <div className="shrink-0 flex flex-wrap items-center gap-2">
+                      {token.checkResult && (
+                        <div className="flex flex-wrap items-center gap-2 md:mr-2 md:border-r border-slate-800 md:pr-4">
+                          {!!token.checkResult.accountAge && <span className="text-slate-400 text-xs flex items-center gap-1 bg-slate-800/50 px-2 py-1 rounded"><Clock className="w-3 h-3"/> {token.checkResult.accountAge}</span>}
+                          {!!token.checkResult.hasNitro && <span className="text-fuchsia-400 text-xs flex items-center gap-1 bg-fuchsia-500/10 px-2 py-1 rounded border border-fuchsia-500/20"><Gift className="w-3 h-3"/> Nitro</span>}
+                          {!!token.checkResult.phoneVerified && <span className="text-blue-400 text-xs flex items-center gap-1 bg-blue-500/10 px-2 py-1 rounded border border-blue-500/20"><Search className="w-3 h-3"/> Phone</span>}
+                          {!!token.checkResult.emailVerified && <span className="text-emerald-400 text-xs flex items-center gap-1 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20"><CheckCircle2 className="w-3 h-3"/> Email</span>}
+                          {!!token.checkResult.hasAvatar && <span className="text-indigo-400 text-xs flex items-center gap-1 bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20"><Fingerprint className="w-3 h-3"/> Avatar</span>}
+                        </div>
+                      )}
+                      
+                      {token.status === "ready" ? <span className="text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider border border-emerald-500/20 flex items-center gap-1"><CheckCircle2 className="w-3 h-3"/> Valid</span> :
+                       token.status === "error" ? <span className="text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider border border-rose-500/20 flex items-center gap-1"><XCircle className="w-3 h-3"/> Error</span> :
+                       <span className="text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider border border-blue-500/20 flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin"/> Check</span>}
                     </div>
                   </div>
                   {token.error && (
-                    <div className="mt-4 text-sm text-rose-300 bg-rose-500/10 px-4 py-3 rounded-xl border border-rose-500/20 flex items-start gap-2 relative z-10">
-                      <XCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                    <div className="mt-3 text-xs text-rose-300 bg-rose-500/10 px-3 py-2 rounded-lg border border-rose-500/20 flex items-start gap-1.5 relative z-10">
+                      <XCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                       <span>{token.error}</span>
-                    </div>
-                  )}
-                  {token.checkResult && (
-                    <div className="mt-5 pt-5 border-t border-slate-800/60 flex flex-wrap gap-4 text-sm font-medium relative z-10">
-                      <span className="text-slate-200 font-bold bg-[#1a2133] px-3 py-1.5 rounded-lg border border-slate-700/50 shadow-sm">@{token.checkResult.user?.username}</span>
-                      {token.checkResult.accountAge && <span className="text-slate-300 flex items-center gap-1.5 bg-[#151924] px-3 py-1.5 rounded-lg border border-slate-700/50 hover:bg-slate-800 transition-colors cursor-default"><Clock className="w-4 h-4 text-slate-400"/> {token.checkResult.accountAge}</span>}
-                      {token.checkResult.hasNitro && <span className="text-fuchsia-300 flex items-center gap-1.5 bg-fuchsia-500/15 px-3 py-1.5 rounded-lg border border-fuchsia-500/20 shadow-[0_0_10px_rgba(217,70,239,0.1)]"><Gift className="w-4 h-4 text-fuchsia-400"/> Nitro</span>}
-                      {token.checkResult.phoneVerified && <span className="text-blue-300 flex items-center gap-1.5 bg-blue-500/15 px-3 py-1.5 rounded-lg border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)]"><Search className="w-4 h-4 text-blue-400"/> Phone</span>}
-                      {token.checkResult.emailVerified && <span className="text-emerald-300 flex items-center gap-1.5 bg-emerald-500/15 px-3 py-1.5 rounded-lg border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]"><CheckCircle2 className="w-4 h-4 text-emerald-400"/> Email</span>}
-                      {token.checkResult.hasAvatar && <span className="text-indigo-300 flex items-center gap-1.5 bg-indigo-500/15 px-3 py-1.5 rounded-lg border border-indigo-500/20 shadow-[0_0_10px_rgba(99,102,241,0.1)]"><Fingerprint className="w-4 h-4 text-indigo-400"/> Avatar</span>}
                     </div>
                   )}
                 </div>
@@ -377,6 +370,13 @@ function QuestView({ onBack }: { onBack: () => void }) {
   const [validating, setValidating] = useState(false);
   const [running, setRunning] = useState(false);
   const [operation, setOperation] = useState<"COMPLETE_QUEST" | "CLAIM_QUEST">("COMPLETE_QUEST");
+  const [copiedToken, setCopiedToken] = useState<string | null>(null);
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedToken(text);
+    setTimeout(() => setCopiedToken(null), 2000);
+  };
 
   // Quest fetching
   const [quests, setQuests] = useState<DiscordQuest[]>([]);
@@ -869,7 +869,7 @@ function QuestView({ onBack }: { onBack: () => void }) {
 
           <div className="space-y-3">
             {tokens.map((token, idx) => (
-              <div key={idx} className="group p-4 rounded-2xl border bg-[#0b0e14]/60 backdrop-blur-md border-slate-800/80 hover:border-purple-500/30 hover:bg-[#0b0e14] transition-all duration-300 relative overflow-hidden">
+              <div key={idx} onClick={() => handleCopy(token.originalLine)} className="group p-4 rounded-2xl border bg-[#0b0e14]/60 backdrop-blur-md border-slate-800/80 hover:border-purple-500/30 hover:bg-[#0b0e14] transition-all duration-300 relative overflow-hidden cursor-pointer">
                 <div className={`absolute left-0 top-0 bottom-0 w-[3px] transition-opacity ${
                   token.status === 'success' ? 'bg-gradient-to-b from-emerald-400 to-emerald-600 opacity-100' :
                   token.status === 'error' || token.status === 'invalid' ? 'bg-gradient-to-b from-rose-400 to-rose-600 opacity-100' :
@@ -877,9 +877,12 @@ function QuestView({ onBack }: { onBack: () => void }) {
                   token.status === 'running' ? 'bg-gradient-to-b from-purple-400 to-purple-600 opacity-100 animate-pulse' :
                   'opacity-0'
                 }`}></div>
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center relative z-10">
                   <div className="flex items-center gap-3">
-                    <p className="font-semibold text-sm text-slate-200 font-mono">{token.email}</p>
+                    <p className="font-semibold text-sm text-slate-200 font-mono flex items-center gap-2">
+                      {token.email}
+                      {copiedToken === token.originalLine ? <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-sans tracking-wide uppercase">Copied!</span> : <span className="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-sans tracking-wide uppercase opacity-0 group-hover:opacity-100 transition-opacity">Copy</span>}
+                    </p>
                     {token.username && <span className="text-slate-400 text-xs bg-[#1a2133] px-2 py-1 rounded-lg border border-slate-700/50">@{token.username}</span>}
                   </div>
                   <div className="shrink-0">

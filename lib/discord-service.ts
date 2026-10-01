@@ -453,13 +453,13 @@ class DiscordService {
   async claimQuestReward(token: string, questId: string): Promise<boolean> {
     const session = await this.createSession(token);
     
-    // We pass location: 1 in payload based on Discord API requirements for claiming
+    // Use /claim-reward with both platform and location based on recent Discord client behavior
     const response = await this.makeRequest(
       session,
       "POST",
       `${DISCORD_API_BASE}/quests/${questId}/claim-reward`,
       DEFAULT_BACKOFF,
-      { location: 1 }
+      { platform: 2, location: 2 }
     );
 
     if (response.status_code === 401 || response.status_code === 0) {
@@ -468,10 +468,11 @@ class DiscordService {
 
     if (response.status_code >= 400 && response.status_code !== 401) {
       console.warn(`Failed to claim reward for quest ${questId}: ${response.status_code}`);
-      // Usually means already claimed or not completed
+      const body = await response.json().catch(() => null);
+      throw new DiscordAPIError(response.status_code, `Claim failed: ${body ? JSON.stringify(body) : response.status_code}`, false);
     }
 
-    return response.status_code === 200;
+    return response.status_code >= 200 && response.status_code < 300;
   }
 
   private async makeRequest(

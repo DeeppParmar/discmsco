@@ -201,6 +201,10 @@ export async function claimQuest(
       // Enroll, complete, and claim quest
       await discordService.enrollQuest(token, questId);
       await discordService.completeQuest(token, questId);
+      
+      // Wait a moment to ensure Discord backend has fully processed the completion
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       await discordService.claimQuestReward(token, questId);
 
       // Update job
