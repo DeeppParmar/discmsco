@@ -1,0 +1,1759 @@
+{
+  "quests": [
+    {
+      "id": "1550081499628441600",
+      "config": {
+        "id": "1550081499628441600",
+        "config_version": 2,
+        "starts_at": "2026-09-17T22:30:00+05:30",
+        "expires_at": "2026-10-01T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://warthunder.com/play4free?r=discord",
+          "id": "357607478105604096",
+          "name": "War Thunder"
+        },
+        "assets": {
+          "hero": "quests/1550081499628441600/1550083670164119662.jpg",
+          "hero_video": "quests/1550081499628441600/1550084022099517531_720.mp4",
+          "quest_bar_hero_blurhash": "HecJFIBXhoh/eIiHdXsIUtnQkA==",
+          "quest_bar_hero": "quests/1550081499628441600/1550083669404946512.jpg",
+          "quest_bar_hero_video": "quests/1550081499628441600/1550083882219474944_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1550081499628441600/1550083669564072028.png",
+          "game_tile_dark": "quests/1550081499628441600/1550083669564072028.png",
+          "logotype_light": "quests/1550081499628441600/1550083669576650812.png",
+          "logotype_dark": "quests/1550081499628441600/1550083669601812560.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "War Thunder",
+          "game_title": "War Thunder",
+          "game_publisher": "Gaijin Entertainment"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_XBOX": "@{type=PLAY_ON_XBOX; target=900; applications=System.Object[]; external_ids=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-31T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://warthunder.com/play4free?r=discord",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJeVY4QUp2bkgwNUVxcFJGZ2pyYlFWZWQwV1lWVDZzOVFzcGEwRmJZSFVBTUJBdm4vYmRsbmFhZWdSZmcvYVFVTE5Ba3c2MTFBeEc4VUY2QUp3Nm9JaDUxVHpjYkhUOHpJNDVTd3dLVFhKNkwwTit4UWdNSUFtRGhxK2grRGphR21hdG1sZWlUR3BKaGVXcFhKTWlyalJnc0k5K2hrUHRlT2J1bkc3S1hGRnN5TTY2MDg1In0="
+    },
+    {
+      "id": "1548040517420449792",
+      "config": {
+        "id": "1548040517420449792",
+        "config_version": 2,
+        "starts_at": "2026-09-21T22:30:00+05:30",
+        "expires_at": "2026-09-29T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://www.playnow.wizard101.com/?utm_source=discord&utm_medium=playquest&utm_campaign=18th_anniversary",
+          "id": "363413310474813450",
+          "name": "Wizard101"
+        },
+        "assets": {
+          "hero": "quests/1548040517420449792/1548041405379641404.jpg",
+          "hero_video": "quests/1548040517420449792/1548041397335232572.mp4",
+          "quest_bar_hero_blurhash": "EtcJEoQwVIx2eEeJX3f6aag=",
+          "quest_bar_hero": "quests/1548040517420449792/1548041405379641404.jpg",
+          "quest_bar_hero_video": "quests/1548040517420449792/1549897128346656788_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1548040517420449792/1548041155948711956.png",
+          "game_tile_dark": "quests/1548040517420449792/1548041155948711956.png",
+          "logotype_light": "quests/1548040517420449792/1548041302195699793.png",
+          "logotype_dark": "quests/1548040517420449792/1548041302195699793.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Wizard101 Birthday!",
+          "game_title": "Wizard101",
+          "game_publisher": "KingsIsle Entertainment"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_XBOX": "@{type=PLAY_ON_XBOX; target=900; applications=System.Object[]; external_ids=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-29T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://www.playnow.wizard101.com/?utm_source=discord&utm_medium=playquest&utm_campaign=18th_anniversary",
+          "button_label": "Play Free Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJOU43RHM3Zjk4SW9xS2N0RjQzTjVFdW9GYlJLQjh1UTFER2cvS2Q5clhybUUzOXZpVGJPZ25nT0N1eTVsdjVDV292Y1ZQY3VJM1gxdDNvNUsxT3M1OHFjNktvRXFMV25PUnp4R2lpUndtWUNTYzFncWhBUzAyQzl4V2I0cGE1aWdweWh4L1FVSTFQSzhGOHNlNEw2TUFwY05DdkRHb1NZYnYyZVcwRHMyYU5ib1VOYTFPIn0="
+    },
+    {
+      "id": "1548002983260725379",
+      "config": {
+        "id": "1548002983260725379",
+        "config_version": 2,
+        "starts_at": "2026-09-18T09:30:00+05:30",
+        "expires_at": "2026-09-19T15:29:59+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://www.roblox.com/spotlight/the-hunt-roblox-20?gsrbx=1",
+          "id": "363445589247131668",
+          "name": "Roblox"
+        },
+        "assets": {
+          "hero": "quests/1548002983260725379/1550207547552829440.jpg",
+          "hero_video": "quests/1548002983260725379/1550212976248758333_720.mp4",
+          "quest_bar_hero_blurhash": "pMUJHIKwJ4iDmKeOdnRwRQZEJA==",
+          "quest_bar_hero": "quests/1548002983260725379/1550211667529306222.jpg",
+          "quest_bar_hero_video": "quests/1548002983260725379/1550212660463804436_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1548002983260725379/1548030113092739274.png",
+          "game_tile_dark": "quests/1548002983260725379/1548029924919746560.png",
+          "logotype_light": "quests/1548002983260725379/1550225101654327296.png",
+          "logotype_dark": "quests/1548002983260725379/1550207372218212412.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "ROBLOX",
+          "game_title": "The Hunt: Roblox 20",
+          "game_publisher": "ROBLOX"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=1; sku_id=1550260246524723320; asset=quests/1548002983260725379/1550167845780856832.png; asset_video=; messages=; approximate_count=; redemption_link=}"
+          ],
+          "rewards_expire_at": "2026-10-19T15:29:59+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://www.roblox.com/spotlight/the-hunt-roblox-20?gsrbx=1",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLZ0hLSkFIS2ZPZzZ1SEpLNG02anpReSt5OTBwNkl5UGJPbk5ZbUNEZlJUZVBKNFVyZDBaak45MTZNYzJaRlJBTVltZzZvL1BkUU5YazNHdEJpSHNVdGVTbkZ1aS9wRDJZUTVIY21vWmRmS0puSHhDOU1KcXkwSkpGK0tpcWxOYUxlclNraEZVVVVuay9rcmxSM1dDZC9TcmlkMURIVFhheFRDejBYSkxzR2taclFMODJ3In0="
+    },
+    {
+      "id": "1539421708417765386",
+      "config": {
+        "id": "1539421708417765386",
+        "config_version": 2,
+        "starts_at": "2026-09-22T22:30:00+05:30",
+        "expires_at": "2026-09-29T05:15:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://store.steampowered.com/app/3613050/Gravebound/",
+          "id": "1551691007387508878",
+          "name": "Gravebound"
+        },
+        "assets": {
+          "hero": "quests/1539421708417765386/1546914021784158218.jpg",
+          "hero_video": "quests/1539421708417765386/1539424583407509504_720.mp4",
+          "quest_bar_hero_blurhash": "0icKDIIhiHePdniId2jmcAKpRg==",
+          "quest_bar_hero": "quests/1539421708417765386/1546914000439214120.jpg",
+          "quest_bar_hero_video": "quests/1539421708417765386/1539424135321493544_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1539421708417765386/1539423906274742332.jpg",
+          "game_tile_dark": "quests/1539421708417765386/1539423906274742332.jpg",
+          "logotype_light": "quests/1539421708417765386/1539424409083842620.png",
+          "logotype_dark": "quests/1539421708417765386/1539424270306770995.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Gravebound Early Access Launch",
+          "game_title": "Gravebound",
+          "game_publisher": "Crater Studios"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-29T05:15:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://store.steampowered.com/app/3613050/Gravebound/",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJRCtuZEZyUWdBWW1VYU00Z2hDZ3pINDJUOHdyQkVveHpZQW9FTVJIUE9EQXJQa0FVeEljaXAwTHRXTmJvS3ZwRm1qN2hSOGZzUkRBdGVaY0U3VzVVOWlpODNSV01lK24xQkJMZGoxWmpZMXhodnM5N1B5dUtRV2VDekNSaFdDYmU0UE9lSTUwRkhaSXRwMDc5bnZxN1RPUS9RdjZvaEVsWjJKMDdNUUlqdFd4ZTV6U01aIn0="
+    },
+    {
+      "id": "1543813403204788235",
+      "config": {
+        "id": "1543813403204788235",
+        "config_version": 2,
+        "starts_at": "2026-09-18T22:30:00+05:30",
+        "expires_at": "2026-09-28T22:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://store.steampowered.com/app/2507950?utm_source=discordquest",
+          "id": "1314682894106497096",
+          "name": "Delta Force"
+        },
+        "assets": {
+          "hero": "quests/1543813403204788235/1548966819295924315.jpg",
+          "hero_video": "quests/1543813403204788235/1548966852237991966_720.mp4",
+          "quest_bar_hero_blurhash": "3PcNFIKvl2Z6dnd3hXkyUFYQhQ==",
+          "quest_bar_hero": "quests/1543813403204788235/1548966694913835018.jpg",
+          "quest_bar_hero_video": "quests/1543813403204788235/1548966699611463701_720.mp4",
+          "game_tile": "1519541505264451655.png",
+          "logotype": "1521168404357058631.png",
+          "game_tile_light": "quests/1519537307718520912/1519540250509049957.png",
+          "game_tile_dark": "quests/1519537307718520912/1519540250509049957.png",
+          "logotype_light": "quests/1519537307718520912/1521168383956091040.png",
+          "logotype_dark": "quests/1519537307718520912/1519540248462229554.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "2nd Anniversary Season",
+          "game_title": "Delta Force",
+          "game_publisher": "Team Jade"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_XBOX": "@{type=PLAY_ON_XBOX; target=900; applications=System.Object[]; external_ids=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-28T22:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://store.steampowered.com/app/2507950?utm_source=discordquest",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJdlB3ZUQzc2Rpb2RsMUJZUk1rTHhKeGExU0N2Mjg1bk9BdzR5MzJrTlJPS1QvazFyMkZqUnRYRUpjajllanpMTzhpbktYcDB4cGh2bW1SSHdyZFJNdkxVeFdmMENmZE1TUis4V3h2eUZ5aXkrSmtPR2l3QjI2UHlPbHowOWhpY0FnQkxkUk56cFgyR3UrNEZycC9XS3R6SXpUZmZJNHJCZEttN0RDZi9HNHRTZkM2Mm1KIn0="
+    },
+    {
+      "id": "1550543095911678094",
+      "config": {
+        "id": "1550543095911678094",
+        "config_version": 2,
+        "starts_at": "2026-10-01T12:30:00+05:30",
+        "expires_at": "2026-10-07T09:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://akendfield.gryphline.com/d27t/V1D5DPQ",
+          "id": "1461154307171811401",
+          "name": "Arknights: Endfield"
+        },
+        "assets": {
+          "hero": "quests/1550528900788912231/1550541204247027854.jpg",
+          "hero_video": "quests/1550528900788912231/1550541343808426024_720.mp4",
+          "quest_bar_hero_blurhash": "ZfcRCoKPZ4iKd1d4H6bwgmQ=",
+          "quest_bar_hero": "quests/1550528900788912231/1550541204247027854.jpg",
+          "quest_bar_hero_video": "quests/1550528900788912231/1550541251667824832_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1534395181334270063/1534399094129295400.jpg",
+          "game_tile_dark": "quests/1534395181334270063/1534399094129295400.jpg",
+          "logotype_light": "quests/1534395181334270063/1534399093877637151.png",
+          "logotype_dark": "quests/1534395181334270063/1534399093881704558.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Typhoeus",
+          "game_title": "Arknights: Endfield",
+          "game_publisher": "GRYPHLINE"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-11-06T09:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://akendfield.gryphline.com/d27t/V1D5DPQ",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLK0FiVG1wQ2I1eFVBbjljdXQ1cVZCTElJSEVWSDhRRXg4bjAzZEtMODM3bGFDR2FvTUI3L2hZbWZiaU1qVjRLekQ5M1orczBHOEZDNW91ZHFqM3UxcWV1NEsrVkFGa3ZxcEJUOE5GOGZobUFMTTdtRUlyMHJSUkJxSFN1ZWpDQnF6ZFB2cCtvSmF0M0V1VmNsOW1MQVpzOFUrU2M3YURJbkR3RHhqSGMxUGUvUzNVS2V5In0="
+    },
+    {
+      "id": "1544550568742101012",
+      "config": {
+        "id": "1544550568742101012",
+        "config_version": 2,
+        "starts_at": "2026-09-15T22:30:00+05:30",
+        "expires_at": "2026-10-01T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://pageload.itddo2.com/o2-gtm/sdk/page/transfer.html?o2_app_id=107897&page_id=10789702&o2_ascribe=4&page_sort=3&utm_source=discord&utm_campaign=dragonheir_quest_2609&utm_term=pc&utm_content=video_quest&utm_medium=32648&steam_path=https%3A%2F%2Fstore.steampowered.com%2Fapp%2F2203070%2FDragonheir_Silent_Gods%2F",
+          "id": "1168655587958063205",
+          "name": "Dragonheir"
+        },
+        "assets": {
+          "hero": "quests/1544550568742101012/1547129380038381598.jpg",
+          "hero_video": "quests/1544550568742101012/1547068700685893632_720.mp4",
+          "quest_bar_hero_blurhash": "zqYJGopAmVeVl5Z3v2r1ylY=",
+          "quest_bar_hero": "quests/1544550568742101012/1547129380038381598.jpg",
+          "quest_bar_hero_video": "quests/1544550568742101012/1547068489921986690_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1544550568742101012/1547068181154365460.png",
+          "game_tile_dark": "quests/1544550568742101012/1547068181154365460.png",
+          "logotype_light": "quests/1544550568742101012/1547781017794912366.png",
+          "logotype_dark": "quests/1544550568742101012/1547781016398073917.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Dragonheir: Chaos Revelry",
+          "game_title": "Dragonheir: Silent Gods",
+          "game_publisher": "Level Infinite"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-31T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://pageload.itddo2.com/o2-gtm/sdk/page/transfer.html?o2_app_id=107897&page_id=10789702&o2_ascribe=4&page_sort=3&utm_source=discord&utm_campaign=dragonheir_quest_2609&utm_term=pc&utm_content=video_quest&utm_medium=32648&steam_path=https%3A%2F%2Fstore.steampowered.com%2Fapp%2F2203070%2FDragonheir_Silent_Gods%2F",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLWlU3NkNDV3B5ZHFRVGsxR2RwTW5oL054bXJ2R3YvakVSMTRZMlFocTJOeTNwRXA0Qm5LUDJqaTBGU2hWZHVlVW1qYllOK3Rkblk1RGNLS2RvY1hyaUdyUG5TQTZrZGxieDdmQmVvWWxuY09hOVdDcXBzSytlUlJTamowK2k3eDhzNHpld3lUc2kvaGpXNXlpTm0vdEh2SEdORm5TYXpTNUlvV2pBcTF6Q3JkdFI4VkQrIn0="
+    },
+    {
+      "id": "1547678204398014494",
+      "config": {
+        "id": "1547678204398014494",
+        "config_version": 2,
+        "starts_at": "2026-09-12T17:30:00+05:30",
+        "expires_at": "2026-09-28T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://gsght.com/c/qriuej",
+          "id": "1314395942253756416",
+          "name": "Marvel Rivals"
+        },
+        "assets": {
+          "hero": "quests/1546355323118420009/1547443173155020860.jpg",
+          "hero_video": "quests/1546355323118420009/1547443232709935265_720.mp4",
+          "quest_bar_hero_blurhash": "mygKFIIjCZkNloh2l4dgHhf8gA==",
+          "quest_bar_hero": "quests/1546355323118420009/1547443173071126608.jpg",
+          "quest_bar_hero_video": "quests/1546355323118420009/1547443264058040420_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1546355323118420009/1547432204274110534.png",
+          "game_tile_dark": "quests/1546355323118420009/1547432204274110534.png",
+          "logotype_light": "quests/1546355323118420009/1547432227124547594.png",
+          "logotype_dark": "quests/1546355323118420009/1547432227028336811.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Marvel Rivals S10: verify school email, get 10 free trial costumes",
+          "game_title": "Marvel Rivals",
+          "game_publisher": "NetEase Games"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-28T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://gsght.com/c/qriuej",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dKdkdRYmJkK0NaQTBCWUM5Vm5ORVI4bmsvS0o0QUtTZWVtVVdnVlM5N1BXMS9NT0ZQaVBjN3VmNmtDWlY1N1M1UTloYkZyNTcvVFdNeEpDendnRWlyOXFIUjVYQkVsTHNOa2JrR3B4aVhnNFFqd1h3OUIxSml3dUVtaE1yNFRZT2NOTEE2WmpnYjBDQkVMT1hPNndTZ25XQlhULysrSEY4VW14WVpWRkphL1hpUEpIMFo5In0="
+    },
+    {
+      "id": "1534502540371038239",
+      "config": {
+        "id": "1534502540371038239",
+        "config_version": 2,
+        "starts_at": "2026-08-21T05:30:00+05:30",
+        "expires_at": "2026-09-05T04:29:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://albiononline.com/home/play?utm_source=discord&utm_medium=playquest&utm_campaign=dragonfire",
+          "id": "496526645671231488",
+          "name": "Albion Online"
+        },
+        "assets": {
+          "hero": "quests/1534502540371038239/1539228578221260882.jpg",
+          "hero_video": "quests/1534502540371038239/1539228831641243658_720.mp4",
+          "quest_bar_hero_blurhash": "0kgGFIQHdWlkq3aRmXkURQCTBQ==",
+          "quest_bar_hero": "quests/1534502540371038239/1539229063674331156.jpg",
+          "quest_bar_hero_video": "quests/1534502540371038239/1539228831641243658_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1534502540371038239/1539227993933611148.png",
+          "game_tile_dark": "quests/1534502540371038239/1539227993933611148.png",
+          "logotype_light": "quests/1534502540371038239/1539228322503065671.png",
+          "logotype_dark": "quests/1534502540371038239/1539228323626876948.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Albion Online: Dragonfire",
+          "game_title": "Albion Online",
+          "game_publisher": "Albion Online"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_XBOX": "@{type=PLAY_ON_XBOX; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=3; sku_id=1539320738203312209; asset=quests/1534502540371038239/1539320887780835500.mp4; asset_video=; messages=; expires_at=10/30/2026 05:30:00; expires_at_premium=; expiration_mode=3}"
+          ],
+          "rewards_expire_at": "2026-10-05T04:29:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://albiononline.com/home/play?utm_source=discord&utm_medium=playquest&utm_campaign=dragonfire",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dMdGFQUkxPU3ViRlV3L3lLbjdnb01rb0s2V0lKbzJIQVhnQVUrWWl6MytVa3ZaMmtYeDJXall4Q3RSbFhLOWxzNTczeEY0dTl6SzFvUHcyeFN0S3A0aGRXZDk1a08xTVQybEQ0cGN0SjdRelpLbitJRjFmSzhFck14Vldlak5LWnR2aHFwOWpHYUxlUHpvNjNaY3J3cUtINzFTeWI2RklGRm9PWGFvUlFFN2c0NkxseGtWIn0="
+    },
+    {
+      "id": "1550143303079567520",
+      "config": {
+        "id": "1550143303079567520",
+        "config_version": 2,
+        "starts_at": "2026-09-18T00:00:00+05:30",
+        "expires_at": "2026-09-21T23:00:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://osrs.runescape.com/download",
+          "id": "1180205756998488064",
+          "name": "Old School RuneScape"
+        },
+        "assets": {
+          "hero": "quests/1550143303079567520/1550200071079989268.jpg",
+          "hero_video": "quests/1550143303079567520/1550200071172263946.mp4",
+          "quest_bar_hero_blurhash": "S+cJEoZvInmIiFd5gGQEiHc=",
+          "quest_bar_hero": "quests/1550143303079567520/1550200071079989268.jpg",
+          "quest_bar_hero_video": "quests/1550143303079567520/1550200071172263946.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1550143303079567520/1550199845912973392.jpg",
+          "game_tile_dark": "quests/1550143303079567520/1550199845912973392.jpg",
+          "logotype_light": "quests/1550143303079567520/1550199845929623582.png",
+          "logotype_dark": "quests/1550143303079567520/1550199846810685502.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Old School Runescape",
+          "game_title": "Old School Runescape",
+          "game_publisher": "JAGEX"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=3; sku_id=1550204246400438492; asset=quests/1550143303079567520/1550205289184100462.mp4; asset_video=; messages=; expires_at=10/28/2026 05:30:00; expires_at_premium=; expiration_mode=3}"
+          ],
+          "rewards_expire_at": "2026-10-21T23:00:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://osrs.runescape.com/download",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJOWpqaWVKUkpCcjhuenFyTVVwNjhId1BiNWUvYTQ1aEVaWHVYVTdUWXArdnhEODlTZTY5RDhJdXV5MEZEZ2hTMnppS1ZDaGVaL3RnZS9laHBkR0dnYktyblRLWllTZjFnbGZ6U3h3eVkrcWlkbytIalU3Q0tzcU9weGJ2SlA0LzgrZGpRejg5R0NTRnZab29IWHlvQnRlK0V5Z0pCS2ZlSFYyU1BJcU9WcGxNUitTV292In0="
+    },
+    {
+      "id": "1539393111409823906",
+      "config": {
+        "id": "1539393111409823906",
+        "config_version": 2,
+        "starts_at": "2026-08-25T21:45:00+05:30",
+        "expires_at": "2026-09-04T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://www.roblox.com/games/101432174163538/Superstar-Baseball?gsrbx=1",
+          "id": "363445589247131668",
+          "name": "Roblox"
+        },
+        "assets": {
+          "hero": "quests/1539393111409823906/1541544517851680878.jpg",
+          "hero_video": "quests/1539393111409823906/1541544559979528282_720.mp4",
+          "quest_bar_hero_blurhash": "kxYKEoIJlIZlh3uJ4Hc5T5s=",
+          "quest_bar_hero": "quests/1539393111409823906/1541544517851680878.jpg",
+          "quest_bar_hero_video": "quests/1539393111409823906/1541544559979528282_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1539393111409823906/1539393940086587443.png",
+          "game_tile_dark": "quests/1539393111409823906/1539393939923013652.png",
+          "logotype_light": "quests/1539393111409823906/1539393910680322141.png",
+          "logotype_dark": "quests/1539393111409823906/1539393911150219365.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Superstar Baseball",
+          "game_title": "Superstar Baseball on Roblox ",
+          "game_publisher": "ROBLOX"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-04T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://www.roblox.com/games/101432174163538/Superstar-Baseball?gsrbx=1",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dKVG91QUJNVWV5K01XM01jYm1mdnQ1eHJRYkFPUERyUDBwcFlrOWxVallRWHQyOHRIYUJDY01ud3phRWpRNFN6Y0RnQTBhWS9rdkIxUEpzR21lVW9vdVVGTTdCc0tqczhoU2pUVUprbzdzbWpHUmNSRmc5UC9aK1AvdG5aTC92RDB3dDBsWXpaZTRlSGNydEZWT0djOHZRa0tBOEVuV0xkbFI5bGhDblRFNXV5eG91UVNDIn0="
+    },
+    {
+      "id": "1549171029241233449",
+      "config": {
+        "id": "1549171029241233449",
+        "config_version": 2,
+        "starts_at": "2026-09-22T22:30:00+05:30",
+        "expires_at": "2026-10-14T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://game.ea.com/redirect?campaignName=APXL_LF_US-JP_WPP_DIRD_CM_S30SNA_AXN-001-002&caudience=C3-LAPSED30&ccreative=S30-SNAPBACK-KEY-ART",
+          "id": "542075586886107149",
+          "name": "Apex Legends"
+        },
+        "assets": {
+          "hero": "quests/1549171029241233449/1549172049606475986.jpg",
+          "quest_bar_hero_blurhash": "TQcKJIQEqneIh3iTeXmPd/yHhg==",
+          "quest_bar_hero": "quests/1549171029241233449/1549172049669394472.jpg",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1549171029241233449/1549171819775533056.png",
+          "game_tile_dark": "quests/1549171029241233449/1549171819775533056.png",
+          "logotype_light": "quests/1549171029241233449/1552111287868325948.png",
+          "logotype_dark": "quests/1549171029241233449/1552111287440248882.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Apex VS Street Fighter 6 Event",
+          "game_title": "Apex Legends",
+          "game_publisher": "Electronic Arts"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_XBOX": "@{type=PLAY_ON_XBOX; target=900; applications=System.Object[]; external_ids=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=1; sku_id=1549171029241233450; asset=quests/1549171029241233449/1549172050067857438.jpg; asset_video=; messages=; approximate_count=; redemption_link=}"
+          ],
+          "rewards_expire_at": "2026-11-13T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://game.ea.com/redirect?campaignName=APXL_LF_US-JP_WPP_DIRD_CM_S30SNA_AXN-001-002&caudience=C3-LAPSED30&ccreative=S30-SNAPBACK-KEY-ART",
+          "button_label": "Get Game",
+          "subtitle": "Street Fighter 6 smashes into the Outlands"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLWitsdnlmanBncXlpNzc4anVQRU9WUzZ4RllPc1AvTkZGdm9qVjdjQjRGUnlaeGpVMUdpdzEwc2hhTnY2T0RXbFhuSmVhTWRlYjN2cndldUtCVHZUdDdVZXduU2hVVWdITXliT0VVbG1TeXQ4UDNQK0VOTURMZ1p5dzkrM0VlaS96ZXRlbnV2TExNN1YrQzNsMjlBeTIybzRoUjU3anZ6dVY0MklYZ2JPaTEvaFNJYkcyIn0="
+    },
+    {
+      "id": "1551969525602451497",
+      "config": {
+        "id": "1551969525602451497",
+        "config_version": 2,
+        "starts_at": "2026-09-25T22:30:00+05:30",
+        "expires_at": "2026-10-05T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://game.ea.com/redirect?campaignName=FC27_UA_US_EA_SOC_DIS_LH&caudience=C1-C3-FC24-FC26-Competitor&ccreative=LOGOTRI-SEKA-SEHERO-CLEAN",
+          "id": "1531874756096295054",
+          "name": "EA Sports FC 27"
+        },
+        "assets": {
+          "hero": "quests/1551969525602451497/1551981581118345357.jpg",
+          "hero_video": "quests/1551969525602451497/1551970363032862821.mp4",
+          "quest_bar_hero_blurhash": "3vcNFIJoh4h/eHiFeIV1YFUGRQ==",
+          "quest_bar_hero": "quests/1551969525602451497/1551981579088298084.jpg",
+          "quest_bar_hero_video": "quests/1551969525602451497/1551970362114179082.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1551969525602451497/1551970436106027178.png",
+          "game_tile_dark": "quests/1551969525602451497/1551970362135150602.png",
+          "logotype_light": "quests/1551969525602451497/1551970362869153803.png",
+          "logotype_dark": "quests/1551969525602451497/1551970362521026750.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "EA SPORTS FC™ 27",
+          "game_title": "EA SPORTS FC™ 27",
+          "game_publisher": "Electronic Arts"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_XBOX": "@{type=PLAY_ON_XBOX; target=900; applications=System.Object[]; external_ids=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-11-04T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://game.ea.com/redirect?campaignName=FC27_UA_US_EA_SOC_DIS_LH&caudience=C1-C3-FC24-FC26-Competitor&ccreative=LOGOTRI-SEKA-SEHERO-CLEAN",
+          "button_label": "Get Game"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLNkcvWFplcWM4c00vOG5MUmF4bS8vMnlsajNOaWVQTm4yS1ZtN1I4YWNMNFNvK1NNREZROGxjMk1zc2RGOXBmL3RMRWFOb2hVdUdEenBOVnJ2aElraTJYWnBOQlBZek9mSXcwQ2FYZXM5U3hraG84RWhsTXpNbnpKK2JnbERxSjUwKzZDeGl0ZUZob2RWcnJPL1h5VlN4NkdFRHA4eFk2eUVodmdweVovVy9lV1grZzlXIn0="
+    },
+    {
+      "id": "1541642467881783337",
+      "config": {
+        "id": "1541642467881783337",
+        "config_version": 2,
+        "starts_at": "2026-09-01T12:30:00+05:30",
+        "expires_at": "2026-10-10T12:29:00+05:30",
+        "features": [
+          44,
+          15
+        ],
+        "application": {
+          "link": "https://store.steampowered.com/app/3564740/480?utm_source=DiscordOrbs",
+          "id": "1437509662303059998",
+          "name": "Where Winds Meet"
+        },
+        "assets": {
+          "hero": "quests/1541642467881783337/1549183759625232404.jpg",
+          "hero_video": "quests/1541642467881783337/1549448468622475305_720.mp4",
+          "quest_bar_hero_blurhash": "GXoKFIRAJ6mIdImDiIdweAOoVg==",
+          "quest_bar_hero": "quests/1541642467881783337/1549183682332459169.jpg",
+          "quest_bar_hero_video": "quests/1541642467881783337/1549448358110699540_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1527502945875263548/1527507273658667068.png",
+          "game_tile_dark": "quests/1527502945875263548/1527507273658667068.png",
+          "logotype_light": "quests/1527502945875263548/1527507273570848781.png",
+          "logotype_dark": "quests/1527502945875263548/1527507273570848781.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Where Winds Meet 2.2 Wuxia New Era",
+          "game_title": "Where Winds Meet",
+          "game_publisher": "NETEASE"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-11-09T12:29:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://store.steampowered.com/app/3564740/480?utm_source=DiscordOrbs",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dMck1uMWdBcm9mcXM3QjV1V2pNWlE5RkFaWXhLaVRaalNOUWtCVFpEMk92MXNBV3IvNC9XVkRmVW16N0ZqYk9GYk1FOFFGWWNaMC9OM3pVUDhsR2tPRjAyN0d4b1lFb3FYQ1JtQXpRQUNaZ2ZGTmttNit5NWYwb0cveXhBelVCUDd0bzFrTEVZNCt3SUphR0FITWhZRGlmdXkrcTFnNFNJVnQySGh3Zkg0djYybDhsVitNIn0="
+    },
+    {
+      "id": "1545515895353385011",
+      "config": {
+        "id": "1545515895353385011",
+        "config_version": 2,
+        "starts_at": "2026-09-14T21:30:00+05:30",
+        "expires_at": "2026-09-24T11:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://www.roblox.com/games/17625359962/RIVALS?gsrbx=1",
+          "id": "363445589247131668",
+          "name": "Roblox"
+        },
+        "assets": {
+          "hero": "quests/1545515895353385011/1547734220657524756.jpg",
+          "hero_video": "quests/1545515895353385011/1547734299543994468_720.mp4",
+          "quest_bar_hero_blurhash": "I0gKKo7lo+g9gvh4cKQFWWk=",
+          "quest_bar_hero": "quests/1545515895353385011/1547734220657524756.jpg",
+          "quest_bar_hero_video": "quests/1545515895353385011/1547734299543994468_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1545079125243600947/1545080582759907378.png",
+          "game_tile_dark": "quests/1545079125243600947/1545080582352937011.png",
+          "logotype_light": "quests/1545515895353385011/1547734038272548934.png",
+          "logotype_dark": "quests/1545515895353385011/1547734038272548934.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "RIVALS",
+          "game_title": "RIVALS on Roblox",
+          "game_publisher": "ROBLOX"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-24T11:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://www.roblox.com/games/17625359962/RIVALS?gsrbx=1",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLa3ZrS2x6M2hNS3B2cU4xbDVDZlNtODVNZWV6ckdaVUpGL0NyTlNxdFcrSUxxN2h0aDNDWitValU1UWNobU9RSG1BM2xjK1BNVEtzQ1ZxbGdFVnJLZ1VMYVFXRjltYUVHaXRvMlVNQXVVT1FxWmtWZ0NiWCtHU3g0NHMzWUZoalJVellCeGovQnRRUS9hckIzcVBqNmE1dUxkZUp2eERROVRreVpmSVVrb1RqQnVSVnkzIn0="
+    },
+    {
+      "id": "1540476174520557620",
+      "config": {
+        "id": "1540476174520557620",
+        "config_version": 2,
+        "starts_at": "2026-08-25T22:30:00+05:30",
+        "expires_at": "2026-09-05T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://store.steampowered.com/app/1997040/MARVEL_SNAP/?utm_source=discord&utm_medium=questbar&utm_campaign=snap-aug2026-discord&utm_term=us-it-uk-kr-ca-jp-desktop",
+          "id": "1067552066454695965",
+          "name": "Marvel Snap"
+        },
+        "assets": {
+          "hero": "quests/1540476174520557620/1540478501503635506.jpg",
+          "hero_video": "quests/1540476174520557620/1540478216257675314_720.mp4",
+          "quest_bar_hero_blurhash": "0/cFDIIIBlmIeHeSi4YyBEVEEA==",
+          "quest_bar_hero": "quests/1540476174520557620/1540478470885212270.jpg",
+          "quest_bar_hero_video": "quests/1540476174520557620/1540478216257675314_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1540476174520557620/1540477965517852722.png",
+          "game_tile_dark": "quests/1540476174520557620/1540477965517852722.png",
+          "logotype_light": "quests/1540476174520557620/1541846422239055882.png",
+          "logotype_dark": "quests/1540476174520557620/1541846422239055882.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "MARVEL SNAP",
+          "game_title": "MARVEL SNAP x Draft Mode",
+          "game_publisher": "Second Dinner "
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-05T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://store.steampowered.com/app/1997040/MARVEL_SNAP/?utm_source=discord&utm_medium=questbar&utm_campaign=snap-aug2026-discord&utm_term=us-it-uk-kr-ca-jp-desktop",
+          "button_label": "Get Game"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dKdjlYNndUY3ZYWFFFOGlJK1hwTkN3d0g3c2dzQ0U3MVBPemk5QWFUMndZb0ZUenM1QlVHaUZOSUhyTjhUSDR2elBFbXBWbzR3NjJFamRLc1ZJa1VWaXlGeWNXd1JWS3BGNzcxUHBaZ0ZreURjcU9FZWF6bEpQYmlMZkFYSzNlck4raG1PMThEQ3dzSFZGVnREU253dzRWbzBPQS9OTkh0cTY1TWRxbFpNdExyMG9EbXZJIn0="
+    },
+    {
+      "id": "1545079125243600947",
+      "config": {
+        "id": "1545079125243600947",
+        "config_version": 2,
+        "starts_at": "2026-09-04T22:30:00+05:30",
+        "expires_at": "2026-09-14T11:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://www.roblox.com/games/117533937949084/Iron-Soul-Dungeon?gsrbx=1",
+          "id": "363445589247131668",
+          "name": "Roblox"
+        },
+        "assets": {
+          "hero": "quests/1545079125243600947/1545080606906654760.jpg",
+          "hero_video": "quests/1545079125243600947/1545080741237620746_720.mp4",
+          "quest_bar_hero_blurhash": "lEgKGogJmUWHhTqme4DFBEg=",
+          "quest_bar_hero": "quests/1545079125243600947/1545080606906654760.jpg",
+          "quest_bar_hero_video": "quests/1545079125243600947/1545080741237620746_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1545079125243600947/1545080582759907378.png",
+          "game_tile_dark": "quests/1545079125243600947/1545080582352937011.png",
+          "logotype_light": "quests/1545079125243600947/1547655028209360987.png",
+          "logotype_dark": "quests/1545079125243600947/1547655028209360987.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Iron Soul: Dungeon",
+          "game_title": "Iron Soul: Dungeon on Roblox",
+          "game_publisher": "ROBLOX"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-14T11:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://www.roblox.com/games/117533937949084/Iron-Soul-Dungeon?gsrbx=1",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dMdzFONXhKS2VKRUM3SmVqR0QvRmp0ZVVnbnJieS9UNHVtdC84UzMzak5MVGZ0VnZVMWxTaFNmNTNIazJyUlNBejBPdVJyTWRWa2V1bFB4bi9uQTZDSFRvUlUvalY5djZVUmwyMGw3RVFHNmk3ZmgyQW0vUWhDNmRqeE5rdTZMNFNsc0JOUThoM1BzcGRqeWtqUjhWcXZCTWJHU1J0RXJ5ejIyeUVWK1ZFZ0dwWjVNalJvIn0="
+    },
+    {
+      "id": "1542685543295361096",
+      "config": {
+        "id": "1542685543295361096",
+        "config_version": 2,
+        "starts_at": "2026-09-02T09:30:00+05:30",
+        "expires_at": "2026-09-15T09:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://akendfield.gryphline.com/d27t/V1D5DPQ",
+          "id": "1461154307171811401",
+          "name": "Arknights: Endfield"
+        },
+        "assets": {
+          "hero": "quests/1542685543295361096/1542691631273087036.jpg",
+          "hero_video": "quests/1542685543295361096/1542691798726475906_720.mp4",
+          "quest_bar_hero_blurhash": "LvcNCoC/g6WGdql274G2Brs=",
+          "quest_bar_hero": "quests/1542685543295361096/1542691631273087036.jpg",
+          "quest_bar_hero_video": "quests/1542685543295361096/1542691687615172699_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1534395181334270063/1534399094129295400.jpg",
+          "game_tile_dark": "quests/1534395181334270063/1534399094129295400.jpg",
+          "logotype_light": "quests/1534395181334270063/1534399093877637151.png",
+          "logotype_dark": "quests/1534395181334270063/1534399093881704558.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Version Update: Typhoeus",
+          "game_title": "Arknights: Endfield",
+          "game_publisher": "GRYPHLINE"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-15T09:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://akendfield.gryphline.com/d27t/V1D5DPQ",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJdENFTmx3RnE4elFSbUkvK1V6V1JiOC9ia3FqOExUaGFua0x3Qkh2YUxsa0phNmdyM2tnVmQ0b2J0YmovK2pSVW1VTXFWQUhvY1I3c2NqdStWTTNXaCtrTWdyWFdza1JORExFOUtRMGZzM05GbU9OSXplczNoSnJpak9yUDYvOFFGK2tXMTNucUs1QksvR1NjbUZtNFdzRWdYak9SN2cxQ0VBWkxBeG5GOWpLQ083OUk4In0="
+    },
+    {
+      "id": "1542696151122321490",
+      "config": {
+        "id": "1542696151122321490",
+        "config_version": 2,
+        "starts_at": "2026-09-16T21:30:00+05:30",
+        "expires_at": "2026-09-24T12:29:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://aniimo.link/dN4y9P",
+          "id": "1468082130474111047",
+          "name": "Aniimo"
+        },
+        "assets": {
+          "hero": "quests/1542696151122321490/1542699814888808448.jpg",
+          "quest_bar_hero_blurhash": "pDcKFIKAdIltaIeGholhgEUS+w==",
+          "quest_bar_hero": "quests/1542696151122321490/1542699773109342339.jpg",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1542696151122321490/1544587685757198347.jpeg",
+          "game_tile_dark": "quests/1542696151122321490/1544587685757198347.jpeg",
+          "logotype_light": "quests/1542696151122321490/1544587685765709924.png",
+          "logotype_dark": "quests/1542696151122321490/1542699141384249475.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "ANIIMO GLOBAL LAUNCH",
+          "game_title": "Aniimo",
+          "game_publisher": "Pawprint"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_XBOX": "@{type=PLAY_ON_XBOX; target=900; applications=System.Object[]; external_ids=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-24T12:29:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://aniimo.link/dN4y9P",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dMTC9Gc1V2c1dHRlN1emdQSXo2S0tZalpMb1RiSTdaV2Z2ellQVi9mTzJKYXNQQUR1NDl0eHlsdlZiNk1PWkk2UVR0dU9hQy9oNkdyeVByZWxxUldkVnd6UTRicDhtTnpUdmo5ZUFUZkJ0MjNadXFYblBKeWxGMWo4WEdpbUN2Z2h3bU5XOU1FYjdrdnpWVjVQTVVOWGgvbnJKa2wxcU0rdXlHS0JuMlVJa3NHN1MyK2RmIn0="
+    },
+    {
+      "id": "1539357001602302053",
+      "config": {
+        "id": "1539357001602302053",
+        "config_version": 2,
+        "starts_at": "2026-09-02T06:30:00+05:30",
+        "expires_at": "2026-09-08T06:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://store.steampowered.com/app/2054970/Dragons_Dogma_2/",
+          "id": "1220537550809337856",
+          "name": "Dragon's Dogma 2"
+        },
+        "assets": {
+          "hero": "quests/1539357001602302053/1539358043815411783.jpg",
+          "quest_bar_hero_blurhash": "jecJDIAGiXZ6hnl1h3j7g6uU9w==",
+          "quest_bar_hero": "quests/1539357001602302053/1539357982230446090.jpg",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1539357001602302053/1539357508190208000.png",
+          "game_tile_dark": "quests/1539357001602302053/1539357508190208000.png",
+          "logotype_light": "quests/1539357001602302053/1539357572124123309.png",
+          "logotype_dark": "quests/1539357001602302053/1539357572124123309.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Return to Dogma",
+          "game_title": "Dragon's Dogma 2",
+          "game_publisher": "CAPCOM"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_XBOX": "@{type=PLAY_ON_XBOX; target=900; applications=System.Object[]; external_ids=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-08T06:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://store.steampowered.com/app/2054970/Dragons_Dogma_2/",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dKY3NiRFMwZlpiYVh3M0src2lPY0FMWGJSeVlXM0E2ckJQdy9XUmJlSTdaUlBqUFpxVjN5VUp5U2N0cm1lTlB3L2w0ZENxbFFtWG1LbnYvUWtqek5FZGVQaDBnMm9oSFZIaEl0QXR1SFVpWnNFRmQ5djZCZ285S083VXhXUDhNVDJmMmRRdGlSQ3V0Q3E5cmhZTG9wVGd5c2tRWk9TVHFaN3MrUVJaUExtUTJRQjY1Sk1aIn0="
+    },
+    {
+      "id": "1544412209935814758",
+      "config": {
+        "id": "1544412209935814758",
+        "config_version": 2,
+        "starts_at": "2026-09-07T22:30:00+05:30",
+        "expires_at": "2026-09-22T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://games.capcomusa.com/?utm_campaign=tgs26&utm_source=discordquest",
+          "id": "1456485028350656512",
+          "name": "Resident Evil Requiem"
+        },
+        "assets": {
+          "hero": "quests/1544412209935814758/1545185568877445230.jpg",
+          "quest_bar_hero_blurhash": "ohsGVIKKyJOKd4WPZZb4dq5/6A==",
+          "quest_bar_hero": "quests/1544412209935814758/1545130808694669312.jpg",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1544412209935814758/1544414262456221807.png",
+          "game_tile_dark": "quests/1544412209935814758/1544414262456221807.png",
+          "logotype_light": "quests/1544412209935814758/1544414295054360656.png",
+          "logotype_dark": "quests/1544412209935814758/1544414382887538858.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "CAPCOM TGS Deals",
+          "game_title": "CAPCOM TGS Deals",
+          "game_publisher": "CAPCOM"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_XBOX": "@{type=PLAY_ON_XBOX; target=900; applications=System.Object[]; external_ids=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-22T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://games.capcomusa.com/?utm_campaign=tgs26&utm_source=discordquest",
+          "button_label": "Learn More"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJMXpEMytVUmluZUpsNEpJc2N1Y3ZSYVBROHltQlNzOWd0QkFFdGdNU1B5SS95YzZYRDNWMXVHclpaQmgrY08vcE5EVVliM3pRd0daUS8yMVJYRTQxUks2Y1UvYXY4bVFpQ2RZMFExeFJmc0JnYXhPcjBIVWZXeXdTczQxa1lIaUhXaUxqbnZPaWdjVGYyUnRvN3hqSDh0S3FMT3hVd1lQUHpmSG9WUXRzZ0xyVnBXTkpuIn0="
+    },
+    {
+      "id": "1550528900788912231",
+      "config": {
+        "id": "1550528900788912231",
+        "config_version": 2,
+        "starts_at": "2026-09-24T09:30:00+05:30",
+        "expires_at": "2026-10-01T12:29:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://akendfield.gryphline.com/d27t/V1D5DPQ",
+          "id": "1461154307171811401",
+          "name": "Arknights: Endfield"
+        },
+        "assets": {
+          "hero": "quests/1550528900788912231/1550541204247027854.jpg",
+          "hero_video": "quests/1550528900788912231/1550541343808426024_720.mp4",
+          "quest_bar_hero_blurhash": "ZfcRCoKPZ4iKd1d4H6bwgmQ=",
+          "quest_bar_hero": "quests/1550528900788912231/1550541204247027854.jpg",
+          "quest_bar_hero_video": "quests/1550528900788912231/1550541251667824832_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1534395181334270063/1534399094129295400.jpg",
+          "game_tile_dark": "quests/1534395181334270063/1534399094129295400.jpg",
+          "logotype_light": "quests/1534395181334270063/1534399093877637151.png",
+          "logotype_dark": "quests/1534395181334270063/1534399093881704558.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Typhoeus",
+          "game_title": "Arknights: Endfield",
+          "game_publisher": "GRYPHLINE"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-10-31T12:29:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://akendfield.gryphline.com/d27t/V1D5DPQ",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJMDAzbVdycVRGcXVyQnFUNFpvUmQxS3BjWUxzajAxckpsYUIycnVRVUk4ZHJvdTAzRlhQb0lXN1daYkdEY0EyUzJ6TnprS2g2MHRIczZyWmZZbkhPZ2RIcUJnOGlSS2JEdUkyNm1oWlZhcmRCT2VkY08zQ2t5TXVFV0dmenp5S0NhTFJLaHVrSkdwejEzU1cxRmRDYzJFWXNHS0lJWVpzOWswN0ZOSjZaSHBwVmljVDRTIn0="
+    },
+    {
+      "id": "1552026065491202149",
+      "config": {
+        "id": "1552026065491202149",
+        "config_version": 2,
+        "starts_at": "2026-09-24T21:30:00+05:30",
+        "expires_at": "2026-10-05T11:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://www.roblox.com/games/78515283254292/Animal-Hospital?gsrbx=1",
+          "id": "363445589247131668",
+          "name": "Roblox"
+        },
+        "assets": {
+          "hero": "quests/1552026065491202149/1552027741996716062.jpg",
+          "hero_video": "quests/1552026065491202149/1552027800377102469_720.mp4",
+          "quest_bar_hero_blurhash": "yxcGEoQIk0iDeViXBq5RcDk=",
+          "quest_bar_hero": "quests/1552026065491202149/1552027741996716062.jpg",
+          "quest_bar_hero_video": "quests/1552026065491202149/1552027800377102469_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1545079125243600947/1545080582759907378.png",
+          "game_tile_dark": "quests/1545079125243600947/1545080582352937011.png",
+          "logotype_light": "quests/1552026065491202149/1552061161371869224.png",
+          "logotype_dark": "quests/1552026065491202149/1552061161371869224.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "Animal Hospital",
+          "game_title": "Animal Hospital on Roblox",
+          "game_publisher": "ROBLOX"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-11-04T11:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://www.roblox.com/games/78515283254292/Animal-Hospital?gsrbx=1",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJdzRicEViRmkxSUh1Z1NpMHhNY09aVEFIcU84Tzg1SjdxalBiKysrRlNiR1dMUVJNUE5KT2Z4R1g3Vjd2Q0lhTVFDbkpXVjRldjROK0FCTGVTaVh5MnY3OW84a3BDTkdLNGlsK0lHdDEwaGhXTmdLNmw4ZzNVVVRzZlQwUi9taStNSzMxYU02RUlleEp5TFAvdEJnaTBoSzBVUFNxVWVHZ3BpTTQvMEs4QmR5MTl3bFRyIn0="
+    },
+    {
+      "id": "1549493465941942383",
+      "config": {
+        "id": "1549493465941942383",
+        "config_version": 2,
+        "starts_at": "2026-09-19T22:30:00+05:30",
+        "expires_at": "2026-09-28T05:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://www.roblox.com/spotlight/the-hunt-roblox-20?gsrbx=1",
+          "id": "363445589247131668",
+          "name": "Roblox"
+        },
+        "assets": {
+          "hero": "quests/1549493465941942383/1549494335261646999.jpg",
+          "hero_video": "quests/1549493465941942383/1550249604270923887_720.mp4",
+          "quest_bar_hero_blurhash": "aLUJHILdZ5VmjptviHY8WO9z9g==",
+          "quest_bar_hero": "quests/1549493465941942383/1549494231628779681.jpg",
+          "quest_bar_hero_video": "quests/1549493465941942383/1550249449530331207_720.mp4",
+          "game_tile": "PLACEHOLDER",
+          "logotype": "PLACEHOLDER",
+          "game_tile_light": "quests/1549493465941942383/1549494713931923526.png",
+          "game_tile_dark": "quests/1549493465941942383/1549494713617490000.png",
+          "logotype_light": "quests/1549493465941942383/1550249575208587335.png",
+          "logotype_dark": "quests/1549493465941942383/1549494161764519998.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "ROBLOX",
+          "game_title": "The Hunt: Roblox 20",
+          "game_publisher": "ROBLOX"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=1; sku_id=1549493465941942384; asset=quests/1549493465941942383/1549500549714550944.png; asset_video=; messages=; approximate_count=; redemption_link=}"
+          ],
+          "rewards_expire_at": "2026-10-28T05:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://www.roblox.com/spotlight/the-hunt-roblox-20?gsrbx=1",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dJRFl6c2phY0FEc3dLaWpQeWJubnZZNkdDVXgrenhQaUpVM1lRVVBuaEZvVzN1QXdlTXE5bVpzanoyWnJkMEVOZ1lwMDg5dDhKOThmY2hyNlc5eTdiTFFWeDlKYW5xcjBUNjR4elFaNEtPdE1sNjhaU3d6M1Z6VFZQSUZ5bk9Sa0hNbzRUeDRQV0RBUjB4SVdGTHl3VzhVdTJycTN0WlZzL2RvWnk0cEYwTHJuendoamRkIn0="
+    },
+    {
+      "id": "1550563498394787951",
+      "config": {
+        "id": "1550563498394787951",
+        "config_version": 2,
+        "starts_at": "2026-09-30T19:30:00+05:30",
+        "expires_at": "2026-10-07T19:30:00+05:30",
+        "features": [
+          15
+        ],
+        "application": {
+          "link": "https://pwgam.es/4ygDZRw",
+          "id": "1470616226995765409",
+          "name": "Neverness to Everness"
+        },
+        "assets": {
+          "hero": "quests/1550563498394787951/1551657575488036925.jpg",
+          "hero_video": "quests/1550563498394787951/1552727440621830154_720.mp4",
+          "quest_bar_hero_blurhash": "lgcGDIAAOWtiemqiiXT/q9zPuA==",
+          "quest_bar_hero": "quests/1550563498394787951/1551657546354270288.jpg",
+          "quest_bar_hero_video": "quests/1550563498394787951/1552727461513666751_720.mp4",
+          "game_tile": "1521701516283744326.jpeg",
+          "logotype": "1521701787801747568.png",
+          "game_tile_light": "quests/1521699040776159282/1521701197248200794.jpeg",
+          "game_tile_dark": "quests/1521699040776159282/1521701197248200794.jpeg",
+          "logotype_light": "quests/1550563498394787951/1554921942534983832.png",
+          "logotype_dark": "quests/1550563498394787951/1554921857046544456.png"
+        },
+        "colors": {
+          "primary": "#4752C4",
+          "secondary": "#000000"
+        },
+        "messages": {
+          "quest_name": "NTE Half Anni",
+          "game_title": "NTE: Neverness to Everness",
+          "game_publisher": "Perfect World Games"
+        },
+        "task_config_v2": {
+          "tasks": {
+            "PLAY_ON_DESKTOP": "@{type=PLAY_ON_DESKTOP; target=900; applications=System.Object[]}",
+            "PLAY_ON_PLAYSTATION": "@{type=PLAY_ON_PLAYSTATION; target=900; applications=System.Object[]; external_ids=System.Object[]}"
+          },
+          "join_operator": "or"
+        },
+        "rewards_config": {
+          "assignment_method": 1,
+          "rewards": [
+            "@{type=4; sku_id=1287881739531976815; messages=; orb_quantity=700; premium_orb_quantity=840}"
+          ],
+          "rewards_expire_at": "2026-11-06T19:30:00+05:30",
+          "platforms": [
+            0
+          ]
+        },
+        "share_policy": "shareable_everywhere",
+        "cta_config": {
+          "link": "https://pwgam.es/4ygDZRw",
+          "button_label": "Play Now"
+        }
+      },
+      "user_status": null,
+      "targeted_content": [],
+      "ad_context": null,
+      "preview": false,
+      "traffic_metadata_raw": "EAIYAQ==",
+      "traffic_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dLRlBaa0lkT0QrVkVqRm5ZSXlMMlRWV2YybmtkWEdkZlc2NEgrbWFkYmlEbldBWU5OWUpkOUtHWkJ2L3drcCtrcWRDME9qN2NQdEZ6eFBteEw5aUhzY28vVyt5OUNIWjNBPSJ9",
+      "provenance_metadata_sealed": "eyJrZXlfZmluZ2VycHJpbnQiOiI4ZGUwNzVmMiIsInBheWxvYWQiOiJBWHdMd2dKdnBIaDBaQkJyQmJUN2NYUlZHSEtPcDEwOFNPNkxaYnBQOUxRQmJBQzdjWnNFUFFxZ0loYjAwYUZXVlZObVZzck16ZyttWUJ4akYyS2hWOG5ma0VyM2taL3dXQ3pLc1dlb2VhZG9hMjhHb2FkTkMvdWtwbHZEYnkwbG1va2lZQ0ptcHpmRENBcEpRM0JCVGtGUlMxQ3JtKzQ2U3IrcWdjQ3MzWkdETHdkV1NPcndNdytBIn0="
+    }
+  ],
+  "excluded_quests": [
+    {
+      "id": "1534613925767676096"
+    },
+    {
+      "id": "1552793125028634754",
+      "replacement_id": "1551969525602451497"
+    },
+    {
+      "id": "1539407814785499267"
+    },
+    {
+      "id": "1539692903037796422"
+    },
+    {
+      "id": "1551982502347022347"
+    },
+    {
+      "id": "1552790924445356043"
+    },
+    {
+      "id": "1549870356624445583"
+    },
+    {
+      "id": "1540167642952761424"
+    },
+    {
+      "id": "1552029588132200532"
+    },
+    {
+      "id": "1537137394975772693"
+    },
+    {
+      "id": "1542164786190622741"
+    },
+    {
+      "id": "1545514693555392603"
+    },
+    {
+      "id": "1547065378205736991"
+    },
+    {
+      "id": "1545511262308278434"
+    },
+    {
+      "id": "1545527302681661540",
+      "replacement_id": "1544412209935814758"
+    },
+    {
+      "id": "1549871018477092965"
+    },
+    {
+      "id": "1546343004569084006"
+    },
+    {
+      "id": "1546355323118420009",
+      "replacement_id": "1547678204398014494"
+    },
+    {
+      "id": "1551983210601382063"
+    }
+  ],
+  "quest_enrollment_blocked_until": null,
+  "quest_access_suspended_until": null
+}

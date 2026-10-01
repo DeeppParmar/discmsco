@@ -352,6 +352,7 @@ interface DiscordQuest {
   claimed: boolean;
   expiresAt: string | null;
   selected: boolean;
+  questType?: "video" | "play";
 }
 
 interface QuestTokenResult {
@@ -504,9 +505,9 @@ function QuestView({ onBack }: { onBack: () => void }) {
     setQuestCount(val);
     const count = parseInt(val) || 0;
     if (count > 0) {
-      const availableQuests = quests.filter(q => !q.completed);
+      const availableQuests = quests.filter(q => !q.completed && q.questType !== "play");
       setQuests(prev => prev.map((q, idx) => {
-        if (q.completed) return { ...q, selected: false };
+        if (q.completed || q.questType === "play") return { ...q, selected: false };
         const availableIdx = availableQuests.findIndex(aq => aq.id === q.id);
         return { ...q, selected: availableIdx >= 0 && availableIdx < count };
       }));
@@ -519,8 +520,8 @@ function QuestView({ onBack }: { onBack: () => void }) {
   };
 
   const selectAll = () => {
-    const allIncomplete = quests.filter(q => !q.completed);
-    setQuests(prev => prev.map(q => q.completed ? q : { ...q, selected: true }));
+    const allIncomplete = quests.filter(q => !q.completed && q.questType !== "play");
+    setQuests(prev => prev.map(q => q.completed || q.questType === "play" ? q : { ...q, selected: true }));
     setQuestCount(String(allIncomplete.length));
   };
 
@@ -754,35 +755,46 @@ function QuestView({ onBack }: { onBack: () => void }) {
 
             {/* Quest list */}
             <div className="space-y-2 mb-6 max-h-80 overflow-y-auto pr-1 scrollbar-thin">
-              {availableQuests.map((quest, idx) => (
-                <button
-                  key={quest.id}
-                  onClick={() => toggleQuest(quest.id)}
-                  className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-center gap-4 group ${
-                    quest.selected
-                      ? 'bg-purple-500/10 border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.1)]'
-                      : 'bg-[#0b0e14]/60 border-slate-800/80 hover:border-slate-700'
-                  }`}
-                >
-                  <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all ${
-                    quest.selected
-                      ? 'bg-purple-500 border-purple-500 text-white'
-                      : 'border-slate-600 group-hover:border-slate-500'
-                  }`}>
-                    {quest.selected && <CheckCircle2 className="w-4 h-4" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white font-semibold text-sm truncate">{quest.name}</span>
-                      {quest.gameName && (
-                        <span className="text-slate-500 text-xs bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700/50 shrink-0">{quest.gameName}</span>
-                      )}
+              {availableQuests.map((quest, idx) => {
+                const isUnsupported = quest.questType === "play";
+                return (
+                  <button
+                    key={quest.id}
+                    onClick={() => {
+                      if (!isUnsupported) toggleQuest(quest.id);
+                    }}
+                    disabled={isUnsupported}
+                    className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-center gap-4 group ${
+                      isUnsupported ? 'bg-slate-900/50 border-slate-800/50 opacity-60 cursor-not-allowed' :
+                      quest.selected
+                        ? 'bg-purple-500/10 border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.1)]'
+                        : 'bg-[#0b0e14]/60 border-slate-800/80 hover:border-slate-700'
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all ${
+                      isUnsupported ? 'border-slate-800 bg-slate-900' :
+                      quest.selected
+                        ? 'bg-purple-500 border-purple-500 text-white'
+                        : 'border-slate-600 group-hover:border-slate-500'
+                    }`}>
+                      {quest.selected && !isUnsupported && <CheckCircle2 className="w-4 h-4" />}
                     </div>
-                    {quest.description && <p className="text-slate-500 text-xs mt-1 truncate">{quest.description}</p>}
-                  </div>
-                  <span className="text-slate-600 text-xs font-mono shrink-0">#{idx + 1}</span>
-                </button>
-              ))}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-white font-semibold text-sm truncate">{quest.name}</span>
+                        {quest.gameName && (
+                          <span className="text-slate-500 text-xs bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700/50 shrink-0">{quest.gameName}</span>
+                        )}
+                        {isUnsupported && (
+                          <span className="text-amber-500 text-xs bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20 shrink-0">Gameplay (Unsupported)</span>
+                        )}
+                      </div>
+                      {quest.description && <p className="text-slate-500 text-xs mt-1 truncate">{quest.description}</p>}
+                    </div>
+                    <span className="text-slate-600 text-xs font-mono shrink-0">#{idx + 1}</span>
+                  </button>
+                );
+              })}
 
               {completedQuests.length > 0 && (
                 <>

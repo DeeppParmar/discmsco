@@ -345,13 +345,13 @@ class DiscordService {
     //   • Every iteration, calculate `elapsed = (Date.now() - startTime) / 1000`
     //   • Send `{ timestamp: floor(elapsed) }` so reported time ≤ real time
     //   • Wait 5 seconds between requests (so each covers ~5s of video)
-    //   • Continue until Discord returns `completed_at` or we exceed 120s
+    //   • Continue until Discord returns `completed_at` or we exceed MAX_DURATION_S
     //
     // For a 30-second quest this takes ~35 real seconds (7 requests).
     // For a 60-second quest this takes ~65 real seconds (13 requests).
 
     const TICK_INTERVAL_MS = 5000;   // 5 seconds between API calls
-    const MAX_DURATION_S = 120;       // give up after 2 minutes
+    const MAX_DURATION_S = 600;       // give up after 10 minutes (600s) to support long video quests
     const startTime = Date.now();
     let completed = false;
     let consecutiveErrors = 0;
@@ -377,6 +377,10 @@ class DiscordService {
 
         if (progressResponse.status_code === 401) {
           throw new DiscordAPIError(401, "Invalid token", false);
+        }
+
+        if (progressResponse.status_code === 400 || progressResponse.status_code === 403 || progressResponse.status_code === 404) {
+          throw new DiscordAPIError(progressResponse.status_code, "Quest is not a video quest or is unsupported", false);
         }
 
         // Reset error counter on any non-fatal response

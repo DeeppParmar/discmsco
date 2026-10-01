@@ -85,6 +85,11 @@ export default async function handler(
         hasStarted = startDate <= now;
       }
 
+      // Identify quest type (Video vs Gameplay)
+      const configStr = JSON.stringify(q.config || {});
+      const isVideo = configStr.includes("WATCH_VIDEO") || !!q.config?.assets?.hero_video || !!q.config?.assets?.quest_bar_hero_video;
+      const questType = isVideo ? "video" : "play";
+
       // Check if quest is targetted/available to user
       // Discord returns quests with a `target_completed` field for unavailable ones
       const isTargetCompleted = q.target_completed === true;
@@ -101,6 +106,7 @@ export default async function handler(
         isExpired,
         hasStarted,
         isTargetCompleted,
+        questType,
       };
     })
     // FILTER: Only show quests the user can actually interact with

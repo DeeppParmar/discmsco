@@ -13,7 +13,7 @@ export const config = {
     responseLimit: false,
     bodyParser: true,
   },
-  maxDuration: 300,
+  maxDuration: 3600,
 };
 
 interface ExecuteRequest {
