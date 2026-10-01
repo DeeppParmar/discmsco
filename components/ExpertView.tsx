@@ -221,6 +221,7 @@ const ExpertUI = ({ onBack }) => {
   const [boostMode, setBoostMode] = useState('2x');         // '2x' | '1x-split'
   const [primaryServer, setPrimaryServer] = useState('');
   const [secondaryServer, setSecondaryServer] = useState('');
+  const [boostTokens, setBoostTokens] = useState('');       // raw tokens for boosting
   const [currentSession, setCurrentSession] = useState(null);
 
   // Config
@@ -346,6 +347,16 @@ const ExpertUI = ({ onBack }) => {
       return;
     }
 
+    // Parse tokens if provided
+    const tokens = boostTokens.trim()
+      ? boostTokens.trim().split('\n').map(t => t.trim()).filter(Boolean)
+      : [];
+
+    if (tokens.length === 0 && accounts.length === 0) {
+      showToast('Add tokens above or load accounts from the Accounts tab', 'error');
+      return;
+    }
+
     setLoading(true);
     try {
       const targets = boostMode === '2x'
@@ -358,7 +369,11 @@ const ExpertUI = ({ onBack }) => {
       const res = await fetch(`${API_URL}/boost/execute`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ boost_mode: boostMode, targets }),
+        body: JSON.stringify({
+          boost_mode: boostMode,
+          targets,
+          ...(tokens.length > 0 && { tokens }),
+        }),
       });
 
       const data = await res.json();
@@ -524,7 +539,40 @@ const ExpertUI = ({ onBack }) => {
 
           {/* ═══ BOOST TAB ═══ */}
           {activeTab === 'boost' && (
-            <div className="space-y-8">
+            <div className="space-y-6">
+              {/* Boost Tokens Input */}
+              <GlassCard className="p-6" glow>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                      <Shield className="w-4 h-4 text-indigo-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-white">Boost Tokens</h2>
+                      <p className="text-xs text-slate-500 mt-0.5">Paste raw Discord tokens to use for boosting</p>
+                    </div>
+                  </div>
+                  {boostTokens.trim() && (
+                    <Badge color="indigo">
+                      <Users className="w-3 h-3" />
+                      {boostTokens.trim().split('\n').filter(Boolean).length} tokens
+                    </Badge>
+                  )}
+                </div>
+                <textarea
+                  placeholder={"Paste tokens here (one per line)\nMTU0NTczOTY0MDY1NTU3NzE1NQ.GvszQs...\nODk2NzQwMjA3OTc0NDQ3MTU0.YWPb..."}
+                  value={boostTokens}
+                  onChange={(e) => setBoostTokens(e.target.value)}
+                  rows={4}
+                  className="w-full bg-[#0b0e14] border border-slate-800/80 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 font-mono focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all duration-300 resize-none leading-relaxed"
+                />
+                {accounts.length > 0 && (
+                  <p className="text-[10px] text-slate-600 mt-2 ml-1 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                    <span><span className="text-slate-400 font-semibold">{accounts.length}</span> accounts from vault will also be used alongside these tokens</span>
+                  </p>
+                )}
+              </GlassCard>
               {/* Boost Mode Selector */}
               <GlassCard className="p-6" glow>
                 <div className="flex items-center gap-3 mb-6">
@@ -595,16 +643,21 @@ const ExpertUI = ({ onBack }) => {
                   </div>
 
                   {/* Boost Summary */}
-                  <GlassCard className="p-4 flex items-center justify-between">
-                    <div className="text-xs text-slate-400">
-                      <span className="text-white font-bold">{totalBoosts}</span> boosts available across <span className="text-white font-bold">{accounts.length}</span> accounts
-                    </div>
-                    <div className="text-xs font-bold text-indigo-400">
-                      Mode: {boostMode === '2x' ? '2x per account → 1 server' : '1x per account → 2 servers'}
+                  <GlassCard className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="text-xs text-slate-400 space-y-1">
+                        <div><span className="text-white font-bold">{totalBoosts}</span> boosts across <span className="text-white font-bold">{accounts.length}</span> vault accounts</div>
+                        {boostTokens.trim() && (
+                          <div><span className="text-white font-bold">{boostTokens.trim().split('\n').filter(Boolean).length}</span> additional tokens loaded</div>
+                        )}
+                      </div>
+                      <div className="text-xs font-bold text-indigo-400">
+                        Mode: {boostMode === '2x' ? '2x per account → 1 server' : '1x per account → 2 servers'}
+                      </div>
                     </div>
                   </GlassCard>
 
-                  <AnimatedButton type="submit" variant="success" loading={loading} disabled={accounts.length === 0} className="w-full">
+                  <AnimatedButton type="submit" variant="success" loading={loading} disabled={accounts.length === 0 && !boostTokens.trim()} className="w-full">
                     <Rocket className="w-4 h-4" />
                     {loading ? 'Executing...' : `Execute ${boostMode === '2x' ? '2x' : '1x Split'} Boost`}
                   </AnimatedButton>
