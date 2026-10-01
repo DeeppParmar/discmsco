@@ -268,6 +268,23 @@ class DiscordService {
       : 0;
   }
 
+  async getQuests(token: string): Promise<any[]> {
+    const session = await this.createSession(token);
+    const response = await this.makeRequest(
+      session,
+      "GET",
+      `${DISCORD_API_BASE}/quests/@me`,
+      DEFAULT_BACKOFF
+    );
+
+    if (response.status_code === 401) {
+      throw new DiscordAPIError(401, "Invalid token", false);
+    }
+
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  }
+
   async enrollQuest(token: string, questId: string): Promise<boolean> {
     const session = await this.createSession(token);
     const response = await this.makeRequest(

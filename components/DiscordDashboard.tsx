@@ -360,6 +360,18 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
   );
 }
 
+interface DiscordQuest {
+  id: string;
+  name: string;
+  description: string;
+  gameName: string;
+  enrolled: boolean;
+  completed: boolean;
+  claimed: boolean;
+  expiresAt: string | null;
+  selected: boolean;
+}
+
 interface QuestTokenResult {
   email: string;
   originalLine: string;
@@ -368,20 +380,24 @@ interface QuestTokenResult {
   status: "pending" | "validating" | "valid" | "invalid" | "running" | "success" | "error";
   username?: string;
   error?: string;
-  questResult?: { enrolled?: boolean; completed?: boolean; claimed?: boolean };
+  questResults?: Record<string, { status: "pending" | "running" | "success" | "error"; error?: string }>;
 }
 
 function QuestView({ onBack }: { onBack: () => void }) {
   const [tokenInput, setTokenInput] = useState("");
-  const [questId, setQuestId] = useState("");
   const [tokens, setTokens] = useState<QuestTokenResult[]>([]);
   const [validating, setValidating] = useState(false);
   const [running, setRunning] = useState(false);
   const [operation, setOperation] = useState<"COMPLETE_QUEST" | "CLAIM_QUEST">("COMPLETE_QUEST");
 
-  const validTokens = useMemo(() => tokens.filter(t => t.status === "valid" || t.status === "success" || t.status === "error"), [tokens]);
-  const successCount = useMemo(() => tokens.filter(t => t.status === "success").length, [tokens]);
-  const errorCount = useMemo(() => tokens.filter(t => t.status === "error").length, [tokens]);
+  // Quest fetching
+  const [quests, setQuests] = useState<DiscordQuest[]>([]);
+  const [fetchingQuests, setFetchingQuests] = useState(false);
+  const [questsFetched, setQuestsFetched] = useState(false);
+  const [questCount, setQuestCount] = useState("");
+
+  const validTokens = useMemo(() => tokens.filter(t => t.status === "valid" || t.status === "success"), [tokens]);
+  const selectedQuests = useMemo(() => quests.filter(q => q.selected && !q.completed), [quests]);
 
   const handleValidate = async () => {
     if (!tokenInput.trim()) return;
@@ -401,10 +417,12 @@ function QuestView({ onBack }: { onBack: () => void }) {
         email = parts[0];
         token = parts[parts.length - 1];
       }
-      return { email, originalLine: line, token, tokenHash: "", status: "validating" as const, };
+      return { email, originalLine: line, token, tokenHash: "", status: "validating" as const };
     });
 
     setTokens(initialTokens);
+
+    let firstValidToken: string | null = null;
 
     await Promise.all(
       initialTokens.map(async (tokenObj, idx) => {
@@ -424,6 +442,7 @@ function QuestView({ onBack }: { onBack: () => void }) {
                 status: "valid",
                 username: data.data?.result?.user?.username,
               };
+              if (!firstValidToken) firstValidToken = tokenObj.token;
             } else {
               updated[idx] = {
                 ...updated[idx],
@@ -433,7 +452,7 @@ function QuestView({ onBack }: { onBack: () => void }) {
             }
             return updated;
           });
-        } catch (err) {
+        } catch {
           setTokens(prev => {
             const updated = [...prev];
             updated[idx] = { ...updated[idx], status: "invalid", error: "Validation failed" };
@@ -444,58 +463,178 @@ function QuestView({ onBack }: { onBack: () => void }) {
     );
 
     setValidating(false);
+
+    // Auto-fetch quests using the first valid token
+    // We need to re-read tokens from the latest state
+    const firstValid = initialTokens.find((_, idx) => {
+      // Check if this token ended up valid - we need to use the token string directly
+      return true;
+    });
+    // Use a small delay to let state settle, then fetch quests
+    setTimeout(() => fetchQuests(), 500);
+  };
+
+  const fetchQuests = async () => {
+    // Find the first valid token from current state
+    setFetchingQuests(true);
+    // We need to get a valid token - read from tokenInput since state might not be settled
+    const lines = tokenInput.split("\n").map(l => l.trim()).filter(l => l);
+    let tokenToUse = "";
+    for (const line of lines) {
+      const parts = line.split(":");
+      tokenToUse = parts.length >= 3 ? parts[parts.length - 1] : line;
+      if (tokenToUse.length > 30) break;
+    }
+
+    if (!tokenToUse) {
+      setFetchingQuests(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/quests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: tokenToUse }),
+      });
+      const data = await response.json();
+      if (data.success && data.data?.quests) {
+        setQuests(data.data.quests.map((q: any) => ({ ...q, selected: false })));
+        setQuestsFetched(true);
+      }
+    } catch {
+      // silently fail
+    }
+    setFetchingQuests(false);
+  };
+
+  // When user types a quest count, auto-select that many quests
+  const handleQuestCountChange = (val: string) => {
+    setQuestCount(val);
+    const count = parseInt(val) || 0;
+    if (count > 0) {
+      const availableQuests = quests.filter(q => !q.completed);
+      setQuests(prev => prev.map((q, idx) => {
+        if (q.completed) return { ...q, selected: false };
+        const availableIdx = availableQuests.findIndex(aq => aq.id === q.id);
+        return { ...q, selected: availableIdx >= 0 && availableIdx < count };
+      }));
+    }
+  };
+
+  const toggleQuest = (questId: string) => {
+    setQuests(prev => prev.map(q => q.id === questId ? { ...q, selected: !q.selected } : q));
+    setQuestCount(""); // Clear the count field since user is manually selecting
+  };
+
+  const selectAll = () => {
+    const allIncomplete = quests.filter(q => !q.completed);
+    setQuests(prev => prev.map(q => q.completed ? q : { ...q, selected: true }));
+    setQuestCount(String(allIncomplete.length));
+  };
+
+  const deselectAll = () => {
+    setQuests(prev => prev.map(q => ({ ...q, selected: false })));
+    setQuestCount("");
   };
 
   const handleRunQuests = async () => {
-    if (!questId.trim()) return;
+    if (selectedQuests.length === 0) return;
     const eligible = tokens.filter(t => t.status === "valid");
     if (eligible.length === 0) return;
 
     setRunning(true);
 
-    // Mark eligible tokens as running
-    setTokens(prev => prev.map(t => t.status === "valid" ? { ...t, status: "running" as const } : t));
+    // Mark eligible tokens as running and init quest results
+    setTokens(prev => prev.map(t => {
+      if (t.status !== "valid") return t;
+      const questResults: Record<string, { status: "pending" | "running" | "success" | "error"; error?: string }> = {};
+      selectedQuests.forEach(q => { questResults[q.id] = { status: "pending" }; });
+      return { ...t, status: "running" as const, questResults };
+    }));
 
+    // For each token, run all selected quests sequentially
     await Promise.all(
-      tokens.map(async (tokenObj, idx) => {
-        if (tokenObj.status !== "running" && tokenObj.status !== "valid") return;
-        try {
-          const response = await fetch("/api/execute", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              tokenHash: tokenObj.tokenHash,
-              operation,
-              questId: questId.trim(),
-              token: tokenObj.token,
-              email: tokenObj.email,
-            }),
-          });
-          const data = await response.json();
+      tokens.map(async (tokenObj, tokenIdx) => {
+        if (tokenObj.status !== "valid" && tokenObj.status !== "running") return;
+
+        let allSuccess = true;
+        for (const quest of selectedQuests) {
+          // Mark this quest as running for this token
           setTokens(prev => {
             const updated = [...prev];
-            if (data.success && data.data?.status === "success") {
-              updated[idx] = {
-                ...updated[idx],
-                status: "success",
-                questResult: { enrolled: true, completed: true, claimed: operation === "CLAIM_QUEST" },
-              };
-            } else {
-              updated[idx] = {
-                ...updated[idx],
-                status: "error",
-                error: data.error || data.data?.error || "Quest operation failed",
+            if (updated[tokenIdx].questResults) {
+              updated[tokenIdx] = {
+                ...updated[tokenIdx],
+                questResults: {
+                  ...updated[tokenIdx].questResults,
+                  [quest.id]: { status: "running" },
+                },
               };
             }
             return updated;
           });
-        } catch (err) {
-          setTokens(prev => {
-            const updated = [...prev];
-            updated[idx] = { ...updated[idx], status: "error", error: "Request failed" };
-            return updated;
-          });
+
+          try {
+            const response = await fetch("/api/execute", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                tokenHash: tokenObj.tokenHash,
+                operation,
+                questId: quest.id,
+                token: tokenObj.token,
+                email: tokenObj.email,
+              }),
+            });
+            const data = await response.json();
+            const success = data.success && data.data?.status === "success";
+            if (!success) allSuccess = false;
+
+            setTokens(prev => {
+              const updated = [...prev];
+              if (updated[tokenIdx].questResults) {
+                updated[tokenIdx] = {
+                  ...updated[tokenIdx],
+                  questResults: {
+                    ...updated[tokenIdx].questResults,
+                    [quest.id]: {
+                      status: success ? "success" : "error",
+                      error: success ? undefined : (data.error || "Failed"),
+                    },
+                  },
+                };
+              }
+              return updated;
+            });
+          } catch {
+            allSuccess = false;
+            setTokens(prev => {
+              const updated = [...prev];
+              if (updated[tokenIdx].questResults) {
+                updated[tokenIdx] = {
+                  ...updated[tokenIdx],
+                  questResults: {
+                    ...updated[tokenIdx].questResults,
+                    [quest.id]: { status: "error", error: "Request failed" },
+                  },
+                };
+              }
+              return updated;
+            });
+          }
         }
+
+        // Final status for token
+        setTokens(prev => {
+          const updated = [...prev];
+          updated[tokenIdx] = {
+            ...updated[tokenIdx],
+            status: allSuccess ? "success" : "error",
+            error: allSuccess ? undefined : "Some quests failed",
+          };
+          return updated;
+        });
       })
     );
 
@@ -505,8 +644,13 @@ function QuestView({ onBack }: { onBack: () => void }) {
   const handleClear = () => {
     setTokens([]);
     setTokenInput("");
-    setQuestId("");
+    setQuests([]);
+    setQuestsFetched(false);
+    setQuestCount("");
   };
+
+  const availableQuests = quests.filter(q => !q.completed);
+  const completedQuests = quests.filter(q => q.completed);
 
   return (
     <div className="max-w-5xl mx-auto p-6 md:p-12">
@@ -562,53 +706,133 @@ function QuestView({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
-      {/* Step 2: Quest Configuration */}
-      <div className={`bg-[#151924] border border-slate-800 rounded-3xl p-8 mb-6 shadow-xl transition-opacity ${validTokens.length === 0 ? 'opacity-40 pointer-events-none' : ''}`}>
+      {/* Step 2: Quest Selection - auto-fetched */}
+      <div className={`bg-[#151924] border border-slate-800 rounded-3xl p-8 mb-6 shadow-xl transition-opacity ${validTokens.length === 0 && !fetchingQuests ? 'opacity-40 pointer-events-none' : ''}`}>
         <div className="flex items-center gap-3 mb-5">
           <div className="w-8 h-8 rounded-full bg-purple-500/15 text-purple-400 flex items-center justify-center text-sm font-bold border border-purple-500/20">2</div>
-          <h2 className="text-white font-bold text-lg">Configure Quest</h2>
+          <h2 className="text-white font-bold text-lg">Select Quests</h2>
+          {fetchingQuests && <Loader2 className="w-4 h-4 animate-spin text-purple-400" />}
+          {questsFetched && <span className="text-slate-500 text-xs">{availableQuests.length} available</span>}
         </div>
 
-        <div className="mb-5">
-          <label className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2 block">Quest ID</label>
-          <input
-            type="text"
-            value={questId}
-            onChange={e => setQuestId(e.target.value)}
-            placeholder="Enter the Discord Quest ID"
-            className="w-full bg-[#0b0e14] border border-slate-800 rounded-2xl px-5 py-3.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-all font-mono"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3 block">Operation</label>
-          <div className="flex bg-[#0b0e14] rounded-full p-1 border border-slate-800/80 w-fit">
-            <button
-              onClick={() => setOperation("COMPLETE_QUEST")}
-              className={`px-6 py-2.5 rounded-full transition-all text-sm font-semibold flex items-center gap-2 ${operation === "COMPLETE_QUEST" ? 'bg-[#1a2133] border border-[#2a3449] text-white shadow-sm' : 'text-slate-400 hover:text-slate-200 border border-transparent'}`}
-            >
-              <Zap className="w-4 h-4" /> Complete Quest
-            </button>
-            <button
-              onClick={() => setOperation("CLAIM_QUEST")}
-              className={`px-6 py-2.5 rounded-full transition-all text-sm font-semibold flex items-center gap-2 ${operation === "CLAIM_QUEST" ? 'bg-[#1a2133] border border-[#2a3449] text-white shadow-sm' : 'text-slate-400 hover:text-slate-200 border border-transparent'}`}
-            >
-              <Gift className="w-4 h-4" /> Complete & Claim
-            </button>
+        {fetchingQuests && (
+          <div className="flex items-center justify-center gap-3 py-8 text-slate-400 text-sm">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Fetching available quests...
           </div>
-        </div>
+        )}
 
-        <button
-          onClick={handleRunQuests}
-          disabled={running || !questId.trim() || validTokens.length === 0}
-          className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 disabled:from-slate-700 disabled:to-slate-700 text-white px-6 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-purple-500/20 text-sm"
-        >
-          {running ? (
-            <><Loader2 className="w-5 h-5 animate-spin" /> Running on {tokens.filter(t => t.status === "running").length} tokens...</>
-          ) : (
-            <><Target className="w-5 h-5" /> Run Quest on {validTokens.length} Token{validTokens.length !== 1 ? 's' : ''}</>
-          )}
-        </button>
+        {questsFetched && quests.length === 0 && (
+          <div className="text-center py-8">
+            <Target className="w-10 h-10 text-slate-700 mx-auto mb-3" />
+            <p className="text-slate-500 text-sm">No quests available for this account.</p>
+          </div>
+        )}
+
+        {questsFetched && quests.length > 0 && (
+          <>
+            {/* Quick select bar */}
+            <div className="flex items-center gap-4 mb-5">
+              <div className="flex items-center gap-2 bg-[#0b0e14] rounded-2xl px-4 py-3 border border-slate-800 flex-1">
+                <span className="text-slate-400 text-sm font-medium whitespace-nowrap">Complete first</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={availableQuests.length}
+                  value={questCount}
+                  onChange={e => handleQuestCountChange(e.target.value)}
+                  placeholder={String(availableQuests.length)}
+                  className="w-16 bg-transparent border border-slate-700 rounded-lg px-2 py-1.5 text-center text-white text-sm font-mono outline-none focus:border-purple-500/50"
+                />
+                <span className="text-slate-400 text-sm font-medium">quest{availableQuests.length !== 1 ? 's' : ''}</span>
+              </div>
+              <button onClick={selectAll} className="text-xs font-semibold text-purple-400 hover:text-purple-300 transition whitespace-nowrap">Select All</button>
+              <button onClick={deselectAll} className="text-xs font-semibold text-slate-500 hover:text-slate-300 transition whitespace-nowrap">Clear</button>
+            </div>
+
+            {/* Quest list */}
+            <div className="space-y-2 mb-6 max-h-80 overflow-y-auto pr-1 scrollbar-thin">
+              {availableQuests.map((quest, idx) => (
+                <button
+                  key={quest.id}
+                  onClick={() => toggleQuest(quest.id)}
+                  className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-center gap-4 group ${
+                    quest.selected
+                      ? 'bg-purple-500/10 border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.1)]'
+                      : 'bg-[#0b0e14]/60 border-slate-800/80 hover:border-slate-700'
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all ${
+                    quest.selected
+                      ? 'bg-purple-500 border-purple-500 text-white'
+                      : 'border-slate-600 group-hover:border-slate-500'
+                  }`}>
+                    {quest.selected && <CheckCircle2 className="w-4 h-4" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-white font-semibold text-sm truncate">{quest.name}</span>
+                      {quest.gameName && (
+                        <span className="text-slate-500 text-xs bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700/50 shrink-0">{quest.gameName}</span>
+                      )}
+                    </div>
+                    {quest.description && <p className="text-slate-500 text-xs mt-1 truncate">{quest.description}</p>}
+                  </div>
+                  <span className="text-slate-600 text-xs font-mono shrink-0">#{idx + 1}</span>
+                </button>
+              ))}
+
+              {completedQuests.length > 0 && (
+                <>
+                  <div className="text-slate-600 text-xs font-semibold uppercase tracking-wider pt-3 pb-1 px-1">Already Completed</div>
+                  {completedQuests.map(quest => (
+                    <div key={quest.id} className="w-full text-left p-4 rounded-2xl border bg-[#0b0e14]/30 border-slate-800/50 flex items-center gap-4 opacity-50">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-500/20 border-2 border-emerald-500/30 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-slate-400 font-semibold text-sm truncate">{quest.name}</span>
+                      </div>
+                      <span className="text-emerald-500/50 text-xs font-bold">DONE</span>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+
+            {/* Operation toggle */}
+            <div className="mb-6">
+              <label className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3 block">Operation</label>
+              <div className="flex bg-[#0b0e14] rounded-full p-1 border border-slate-800/80 w-fit">
+                <button
+                  onClick={() => setOperation("COMPLETE_QUEST")}
+                  className={`px-6 py-2.5 rounded-full transition-all text-sm font-semibold flex items-center gap-2 ${operation === "COMPLETE_QUEST" ? 'bg-[#1a2133] border border-[#2a3449] text-white shadow-sm' : 'text-slate-400 hover:text-slate-200 border border-transparent'}`}
+                >
+                  <Zap className="w-4 h-4" /> Complete Quest
+                </button>
+                <button
+                  onClick={() => setOperation("CLAIM_QUEST")}
+                  className={`px-6 py-2.5 rounded-full transition-all text-sm font-semibold flex items-center gap-2 ${operation === "CLAIM_QUEST" ? 'bg-[#1a2133] border border-[#2a3449] text-white shadow-sm' : 'text-slate-400 hover:text-slate-200 border border-transparent'}`}
+                >
+                  <Gift className="w-4 h-4" /> Complete & Claim
+                </button>
+              </div>
+            </div>
+
+            {/* Run button */}
+            <button
+              onClick={handleRunQuests}
+              disabled={running || selectedQuests.length === 0 || validTokens.length === 0}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 disabled:from-slate-700 disabled:to-slate-700 text-white px-6 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-purple-500/20 text-sm"
+            >
+              {running ? (
+                <><Loader2 className="w-5 h-5 animate-spin" /> Running {selectedQuests.length} quest{selectedQuests.length !== 1 ? 's' : ''} on {tokens.filter(t => t.status === "running").length} tokens...</>
+              ) : (
+                <><Target className="w-5 h-5" /> Run {selectedQuests.length} Quest{selectedQuests.length !== 1 ? 's' : ''} on {validTokens.length} Token{validTokens.length !== 1 ? 's' : ''}</>
+              )}
+            </button>
+          </>
+        )}
       </div>
 
       {/* Step 3: Results */}
@@ -619,8 +843,8 @@ function QuestView({ onBack }: { onBack: () => void }) {
             <h2 className="text-white font-bold text-lg">Results</h2>
             <div className="ml-auto flex items-center gap-3 text-xs font-semibold">
               <span className="text-slate-300 bg-slate-700/30 px-3 py-1.5 rounded-full border border-slate-700/50">{tokens.length} Total</span>
-              {successCount > 0 && <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {successCount}</span>}
-              {errorCount > 0 && <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full border border-rose-500/20 flex items-center gap-1"><XCircle className="w-3 h-3" /> {errorCount}</span>}
+              {tokens.filter(t => t.status === "success").length > 0 && <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {tokens.filter(t => t.status === "success").length}</span>}
+              {tokens.filter(t => t.status === "error").length > 0 && <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full border border-rose-500/20 flex items-center gap-1"><XCircle className="w-3 h-3" /> {tokens.filter(t => t.status === "error").length}</span>}
             </div>
           </div>
 
@@ -644,7 +868,7 @@ function QuestView({ onBack }: { onBack: () => void }) {
                     {token.status === "valid" && <span className="text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-500/20 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Ready</span>}
                     {token.status === "invalid" && <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-rose-500/20 flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5" /> Invalid</span>}
                     {token.status === "running" && <span className="text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-purple-500/20 flex items-center gap-1.5 animate-pulse"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Running</span>}
-                    {token.status === "success" && <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)] flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Completed</span>}
+                    {token.status === "success" && <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)] flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Done</span>}
                     {token.status === "error" && <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-rose-500/20 flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5" /> Failed</span>}
                     {token.status === "pending" && <span className="text-slate-500 bg-slate-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-slate-500/20 flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Pending</span>}
                   </div>
@@ -655,11 +879,25 @@ function QuestView({ onBack }: { onBack: () => void }) {
                     <span>{token.error}</span>
                   </div>
                 )}
-                {token.questResult && (
-                  <div className="mt-3 flex items-center gap-2 text-xs">
-                    {token.questResult.enrolled && <span className="text-blue-300 bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">Enrolled</span>}
-                    {token.questResult.completed && <span className="text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">Completed</span>}
-                    {token.questResult.claimed && <span className="text-fuchsia-300 bg-fuchsia-500/10 px-2.5 py-1 rounded-lg border border-fuchsia-500/20">Claimed</span>}
+                {/* Per-quest results */}
+                {token.questResults && Object.keys(token.questResults).length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {Object.entries(token.questResults).map(([qId, qResult]) => {
+                      const questName = quests.find(q => q.id === qId)?.name || qId;
+                      return (
+                        <span key={qId} className={`text-xs px-2.5 py-1 rounded-lg border flex items-center gap-1.5 ${
+                          qResult.status === "success" ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/20" :
+                          qResult.status === "error" ? "text-rose-300 bg-rose-500/10 border-rose-500/20" :
+                          qResult.status === "running" ? "text-purple-300 bg-purple-500/10 border-purple-500/20 animate-pulse" :
+                          "text-slate-400 bg-slate-500/10 border-slate-500/20"
+                        }`}>
+                          {qResult.status === "running" && <Loader2 className="w-3 h-3 animate-spin" />}
+                          {qResult.status === "success" && <CheckCircle2 className="w-3 h-3" />}
+                          {qResult.status === "error" && <XCircle className="w-3 h-3" />}
+                          {questName}
+                        </span>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -670,3 +908,4 @@ function QuestView({ onBack }: { onBack: () => void }) {
     </div>
   );
 }
+
