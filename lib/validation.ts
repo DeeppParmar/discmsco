@@ -3,7 +3,7 @@
 import crypto from "crypto";
 import { ParsedToken, TokenValidationResult, ValidationGate } from "@/types";
 
-const DISCORD_TOKEN_PATTERN = /^[A-Za-z0-9_-]{68,72}$/;
+const DISCORD_TOKEN_PATTERN = /^[A-Za-z0-9_.-]{60,85}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
 
@@ -119,10 +119,10 @@ export function validateStructure(input: string): ValidationGate {
     };
   }
 
-  if (token.length < 68 || token.length > 72) {
+  if (token.length < 60 || token.length > 85) {
     return {
       passed: false,
-      reason: `Token length invalid: ${token.length} chars (expected 68-72)`,
+      reason: `Token length invalid: ${token.length} chars (expected 60-85)`,
       severity: "critical",
     };
   }
