@@ -129,15 +129,29 @@ export default async function handler(
       operation,
     });
 
-    // Execute synchronously
-    if (operation === OperationType.CHECK) {
-      await checkToken(jobId, tokenHash, token, email);
-    } else if (operation === OperationType.COMPLETE_QUEST) {
-      await completeQuest(jobId, tokenHash, token, questId!);
-    } else if (operation === OperationType.CLAIM_QUEST) {
-      await claimQuest(jobId, tokenHash, token, questId!);
-    } else if (operation === OperationType.CHECK_NITRO) {
-      await checkNitro(jobId, tokenHash, token, email);
+    try {
+      if (operation === OperationType.CHECK) {
+        await checkToken(jobId, tokenHash, token, email);
+      } else if (operation === OperationType.COMPLETE_QUEST) {
+        await completeQuest(jobId, tokenHash, token, questId!);
+      } else if (operation === OperationType.CLAIM_QUEST) {
+        await claimQuest(jobId, tokenHash, token, questId!);
+      } else if (operation === OperationType.CHECK_NITRO) {
+        await checkNitro(jobId, tokenHash, token, email);
+      }
+    } catch (e) {
+      // Job is already marked as FAILED in DB. We return 200 so the frontend 
+      // polling logic can gracefully pick up the failed status.
+      return res.status(200).json({
+        success: true,
+        data: {
+          jobId,
+          operation,
+          status: "error",
+        },
+        statusCode: 200,
+        timestamp: Date.now(),
+      });
     }
 
     return res.status(200).json({

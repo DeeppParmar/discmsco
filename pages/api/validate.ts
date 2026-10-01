@@ -101,12 +101,23 @@ export default async function handler(
       pendingResult
     );
 
-    // Run synchronously instead of inngest
-    // We start it and don't await so we can return the 202 to the frontend, 
-    // BUT since it's Vercel, background promises might die. However, since the user 
-    // polls the job, if they want synchronous we can just await it.
-    // Awaiting it is safer on Vercel.
-    const result = await checkToken(jobId, parsedToken.hash, parsedToken.token, parsedToken.email);
+    let result: any = null;
+    try {
+      result = await checkToken(jobId, parsedToken.hash, parsedToken.token, parsedToken.email);
+    } catch (e) {
+      // Job is already marked as FAILED in DB. We return 200 so the frontend 
+      // polling logic can gracefully pick up the failed status.
+      return res.status(200).json({
+        success: true,
+        data: {
+          jobId,
+          tokenHash: parsedToken.hash,
+          status: "error",
+        },
+        statusCode: 200,
+        timestamp: Date.now(),
+      });
+    }
 
     return res.status(200).json({
       success: true,
@@ -114,7 +125,7 @@ export default async function handler(
         jobId,
         tokenHash: parsedToken.hash,
         status: "ready",
-        result: result.checkResult
+        result: result?.checkResult
       },
       statusCode: 200,
       timestamp: Date.now(),
