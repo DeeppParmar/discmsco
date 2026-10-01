@@ -91,7 +91,12 @@ export interface JobResult {
   jobId: string;
   status: JobStatus;
   operation: OperationType;
-  result?: any;
+  result?: {
+    questId?: string;
+    enrolled?: boolean;
+    completed?: boolean;
+    claimed?: boolean;
+  };
   error?: string;
   progress?: number;
   updatedAt: number;

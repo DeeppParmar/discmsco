@@ -90,20 +90,23 @@ class DiscordService {
   private rateLimitCache = new Map<string, { reset: number; remaining: number }>();
 
   async createSession(token: string): Promise<TLSSession> {
-    const session = {
-      get: async (url: string, options: any) => {
-        const res = await fetch(url, { method: "GET", headers: options.headers });
-        return { status_code: res.status, text: await res.text() };
+    // Dynamically import tls_client to avoid build issues
+    let tlsClient: any;
+    try {
+      tlsClient = require("tls_client");
+    } catch {
+      throw new Error(
+        "tls_client not available in this environment. Ensure Node.js runtime."
+      );
+    }
+
+    const session = new tlsClient.Session(
+      {
+        client_identifier: "chrome_134",
+        random_tls_extension_order: true,
       },
-      post: async (url: string, options: any) => {
-        const res = await fetch(url, { method: "POST", headers: options.headers, body: JSON.stringify(options.json) });
-        return { status_code: res.status, text: await res.text() };
-      },
-      patch: async (url: string, options: any) => {
-        const res = await fetch(url, { method: "PATCH", headers: options.headers, body: JSON.stringify(options.json) });
-        return { status_code: res.status, text: await res.text() };
-      }
-    };
+      undefined
+    );
 
     const headers = {
       ...DEFAULT_HEADERS,
