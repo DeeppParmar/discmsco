@@ -335,40 +335,69 @@ class DiscordService {
   async completeQuest(token: string, questId: string): Promise<boolean> {
     const session = await this.createSession(token);
 
-    // Progress loop
-    let timestamp = 1;
+    // Progress loop - simulate video watching
+    // Use 2-second increments to ensure we cover every second of required duration
+    // Most quests need 30 seconds, but some need more, so we go up to 600
+    let timestamp = 0;
     let completed = false;
+    let consecutiveErrors = 0;
 
-    while (!completed && timestamp < 500) {
-      const progressResponse = await this.makeRequest(
-        session,
-        "POST",
-        `${DISCORD_API_BASE}/quests/${questId}/video-progress`,
-        {
-          ...DEFAULT_BACKOFF,
-          maxRetries: 2,
-        },
-        { timestamp }
-      );
+    while (!completed && timestamp <= 600) {
+      try {
+        const progressResponse = await this.makeRequest(
+          session,
+          "POST",
+          `${DISCORD_API_BASE}/quests/${questId}/video-progress`,
+          {
+            ...DEFAULT_BACKOFF,
+            maxRetries: 2,
+          },
+          { timestamp }
+        );
 
-      if (progressResponse.status_code === 401) {
-        throw new DiscordAPIError(401, "Invalid token", false);
+        if (progressResponse.status_code === 401) {
+          throw new DiscordAPIError(401, "Invalid token", false);
+        }
+
+        // Reset error counter on any non-fatal response
+        consecutiveErrors = 0;
+
+        const progressData = await progressResponse.json();
+        if (progressData.completed_at) {
+          completed = true;
+          break;
+        }
+
+        // Check if response indicates the quest is already done
+        if (progressData.claimed_at || progressData.completed) {
+          completed = true;
+          break;
+        }
+      } catch (error) {
+        // If it's an auth error, re-throw immediately
+        if (error instanceof DiscordAPIError && error.statusCode === 401) {
+          throw error;
+        }
+        // For other errors, allow a few retries before giving up
+        consecutiveErrors++;
+        if (consecutiveErrors >= 5) {
+          throw new DiscordAPIError(
+            500,
+            `Quest progress failed after ${consecutiveErrors} consecutive errors at ${timestamp}s`,
+            false
+          );
+        }
       }
 
-      const progressData = await progressResponse.json();
-      if (progressData.completed_at) {
-        completed = true;
-        break;
-      }
-
-      timestamp += 5;
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      timestamp += 2;
+      // Small delay to simulate real video watching pace
+      await new Promise((resolve) => setTimeout(resolve, 300));
     }
 
     if (!completed) {
       throw new DiscordAPIError(
         500,
-        "Quest progress timed out",
+        "Quest progress timed out after 600 seconds",
         false
       );
     }
