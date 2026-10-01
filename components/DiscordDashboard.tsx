@@ -395,6 +395,7 @@ function QuestView({ onBack }: { onBack: () => void }) {
   const [fetchingQuests, setFetchingQuests] = useState(false);
   const [questsFetched, setQuestsFetched] = useState(false);
   const [questCount, setQuestCount] = useState("");
+  const [questError, setQuestError] = useState("");
 
   const validTokens = useMemo(() => tokens.filter(t => t.status === "valid" || t.status === "success"), [tokens]);
   const selectedQuests = useMemo(() => quests.filter(q => q.selected && !q.completed), [quests]);
@@ -475,9 +476,9 @@ function QuestView({ onBack }: { onBack: () => void }) {
   };
 
   const fetchQuests = async () => {
-    // Find the first valid token from current state
     setFetchingQuests(true);
-    // We need to get a valid token - read from tokenInput since state might not be settled
+    setQuestError("");
+    // Extract token from tokenInput
     const lines = tokenInput.split("\n").map(l => l.trim()).filter(l => l);
     let tokenToUse = "";
     for (const line of lines) {
@@ -488,6 +489,8 @@ function QuestView({ onBack }: { onBack: () => void }) {
 
     if (!tokenToUse) {
       setFetchingQuests(false);
+      setQuestError("No valid token found");
+      setQuestsFetched(true);
       return;
     }
 
@@ -500,13 +503,19 @@ function QuestView({ onBack }: { onBack: () => void }) {
       const data = await response.json();
       if (data.success && data.data?.quests) {
         setQuests(data.data.quests.map((q: any) => ({ ...q, selected: false })));
-        setQuestsFetched(true);
+        if (data.data.error) {
+          setQuestError(data.data.error);
+        }
+      } else {
+        setQuestError(data.error || "Failed to fetch quests");
       }
-    } catch {
-      // silently fail
+    } catch (err) {
+      setQuestError("Network error fetching quests");
     }
+    setQuestsFetched(true);
     setFetchingQuests(false);
   };
+
 
   // When user types a quest count, auto-select that many quests
   const handleQuestCountChange = (val: string) => {
@@ -647,6 +656,7 @@ function QuestView({ onBack }: { onBack: () => void }) {
     setQuests([]);
     setQuestsFetched(false);
     setQuestCount("");
+    setQuestError("");
   };
 
   const availableQuests = quests.filter(q => !q.completed);
@@ -725,7 +735,17 @@ function QuestView({ onBack }: { onBack: () => void }) {
         {questsFetched && quests.length === 0 && (
           <div className="text-center py-8">
             <Target className="w-10 h-10 text-slate-700 mx-auto mb-3" />
-            <p className="text-slate-500 text-sm">No quests available for this account.</p>
+            <p className="text-slate-500 text-sm mb-1">No quests available for this account.</p>
+            {questError && (
+              <p className="text-rose-400/70 text-xs mb-4">{questError}</p>
+            )}
+            <button
+              onClick={fetchQuests}
+              disabled={fetchingQuests}
+              className="text-xs font-semibold text-purple-400 hover:text-purple-300 transition bg-purple-500/10 px-4 py-2 rounded-full border border-purple-500/20"
+            >
+              {fetchingQuests ? "Retrying..." : "Retry Fetch"}
+            </button>
           </div>
         )}
 

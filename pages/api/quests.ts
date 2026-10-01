@@ -31,32 +31,61 @@ export default async function handler(
   try {
     const quests = await discordService.getQuests(token);
 
-    // Map quests to a clean format
-    const mapped = quests.map((q: any) => ({
-      id: q.id || q.quest_id,
-      name: q.config?.quest_bar_config?.quest_name
+    // Map quests to a clean format - handle various Discord response structures
+    const mapped = quests.map((q: any) => {
+      // Extract quest ID from various possible locations
+      const id = q.id || q.quest_id || q.config?.id || "";
+
+      // Extract name - try multiple paths
+      const name = q.config?.quest_bar_config?.quest_name
+        || q.config?.messages?.quest_name
         || q.config?.name
         || q.quest_title
         || q.name
-        || `Quest ${q.id || q.quest_id}`,
-      description: q.config?.quest_bar_config?.quest_description
+        || q.config?.quest_bar_config?.game_title
+        || `Quest ${id}`;
+
+      // Extract description
+      const description = q.config?.quest_bar_config?.quest_description
+        || q.config?.messages?.quest_description
         || q.config?.description
         || q.quest_description
-        || "",
-      gameName: q.config?.quest_bar_config?.game_title
+        || q.description
+        || "";
+
+      // Extract game name
+      const gameName = q.config?.quest_bar_config?.game_title
+        || q.config?.application_name
         || q.config?.game_title
         || q.game_title
-        || "",
-      enrolled: !!q.user_status?.enrolled_at,
-      completed: !!q.user_status?.completed_at,
-      claimed: !!q.user_status?.claimed_at,
-      expiresAt: q.config?.expires_at || q.expires_at || null,
-      rewardCode: q.user_status?.claimed_at ? true : false,
-    }));
+        || "";
+
+      // Check completion status
+      const enrolled = !!(q.user_status?.enrolled_at);
+      const completed = !!(q.user_status?.completed_at);
+      const claimed = !!(q.user_status?.claimed_at);
+
+      // Expiry
+      const expiresAt = q.config?.expires_at || q.expires_at || null;
+
+      return {
+        id,
+        name,
+        description,
+        gameName,
+        enrolled,
+        completed,
+        claimed,
+        expiresAt,
+      };
+    }).filter((q: any) => q.id); // Only include quests with valid IDs
 
     return res.status(200).json({
       success: true,
-      data: { quests: mapped },
+      data: {
+        quests: mapped,
+        rawCount: quests.length,
+      },
       statusCode: 200,
       timestamp: Date.now(),
     });
@@ -64,7 +93,10 @@ export default async function handler(
     console.error("[QUESTS_ERROR]", error);
     return res.status(200).json({
       success: true,
-      data: { quests: [], error: error instanceof Error ? error.message : "Failed to fetch quests" },
+      data: {
+        quests: [],
+        error: error instanceof Error ? error.message : "Failed to fetch quests",
+      },
       statusCode: 200,
       timestamp: Date.now(),
     });

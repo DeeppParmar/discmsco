@@ -270,6 +270,8 @@ class DiscordService {
 
   async getQuests(token: string): Promise<any[]> {
     const session = await this.createSession(token);
+
+    // Try primary endpoint
     const response = await this.makeRequest(
       session,
       "GET",
@@ -282,7 +284,27 @@ class DiscordService {
     }
 
     const data = await response.json();
-    return Array.isArray(data) ? data : [];
+
+    // Handle different response formats
+    let questList: any[] = [];
+    if (Array.isArray(data)) {
+      questList = data;
+    } else if (data && typeof data === "object") {
+      // Could be { quests: [...] } or other nested format
+      if (Array.isArray(data.quests)) {
+        questList = data.quests;
+      } else {
+        // Try to find any array in the response
+        for (const key of Object.keys(data)) {
+          if (Array.isArray(data[key])) {
+            questList = data[key];
+            break;
+          }
+        }
+      }
+    }
+
+    return questList;
   }
 
   async enrollQuest(token: string, questId: string): Promise<boolean> {

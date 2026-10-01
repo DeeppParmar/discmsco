@@ -82,7 +82,7 @@ export async function checkToken(
         premium_type: user.premium_type,
       },
       hasAvatar: !!user.avatar,
-      hasNitro: subscriptions.length > 0,
+      hasNitro: subscriptions.length > 0 || (user.premium_type && user.premium_type > 0),
       nitroExpiry: subscriptions[0]?.current_period_end || undefined,
       nitroBoosts: boosts,
       isFlagged,
