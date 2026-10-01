@@ -37,14 +37,7 @@ export default function DiscordDashboard() {
 function HomeView({ onSelect }: { onSelect: (v: string) => void }) {
   const tools = [
     { id: "checker", name: "Token Checker", desc: "Check up to 1,000 tokens — sorted into valid, locked & invalid with full details.", icon: Search, color: "text-blue-400", bg: "bg-blue-500/10", shadow: "shadow-[0_0_15px_rgba(59,130,246,0.5)]" },
-    { id: "quests", name: "Quest Tools", desc: "Enroll and complete quests automatically for your valid tokens to claim rewards.", icon: Target, color: "text-purple-400", bg: "bg-purple-500/10", shadow: "shadow-[0_0_15px_rgba(168,85,247,0.5)]" },
-    { id: "boost", name: "Boost", desc: "Boost any server from our Nitro stock or your own tokens.", icon: Zap, color: "text-purple-400", bg: "bg-purple-500/10", shadow: "shadow-[0_0_15px_rgba(168,85,247,0.5)]" },
-    { id: "join", name: "Join", desc: "Add members to any server — our account stock or your own tokens.", icon: UserPlus, color: "text-emerald-400", bg: "bg-emerald-500/10", shadow: "shadow-[0_0_15px_rgba(16,185,129,0.5)]" },
-    { id: "humanize", name: "Humanize", desc: "Give accounts a real profile — avatar, name, bio, banner, pronouns & HypeSquad.", icon: Fingerprint, color: "text-amber-400", bg: "bg-amber-500/10", shadow: "shadow-[0_0_15px_rgba(245,158,11,0.5)]" },
-    { id: "password", name: "Change Password", desc: "Change an account's password using its current one.", icon: Lock, color: "text-rose-400", bg: "bg-rose-500/10", shadow: "shadow-[0_0_15px_rgba(244,63,94,0.5)]" },
-    { id: "2fa", name: "Add 2FA", desc: "Lock accounts with a TOTP authenticator.", icon: ShieldAlert, color: "text-rose-500", bg: "bg-rose-500/10", shadow: "shadow-[0_0_15px_rgba(225,29,72,0.5)]" },
-    { id: "recovery", name: "Recovery", desc: "Log back into rotated or logged-out accounts.", icon: KeyRound, color: "text-cyan-400", bg: "bg-cyan-500/10", shadow: "shadow-[0_0_15px_rgba(34,211,238,0.5)]" },
-    { id: "reset", name: "Reset Password", desc: "Reset an account's password through its mailbox.", icon: RotateCcw, color: "text-indigo-400", bg: "bg-indigo-500/10", shadow: "shadow-[0_0_15px_rgba(99,102,241,0.5)]" }
+    { id: "quests", name: "Quest Tools", desc: "Enroll and complete quests automatically for your valid tokens to claim rewards.", icon: Target, color: "text-purple-400", bg: "bg-purple-500/10", shadow: "shadow-[0_0_15px_rgba(168,85,247,0.5)]" }
   ];
 
   return (
@@ -230,17 +223,6 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
           </div>
         </div>
         
-        <div className="flex flex-wrap items-center gap-6 text-sm font-semibold">
-          <span className="text-slate-500 w-14 text-right">Trial</span>
-          <div className="flex flex-wrap bg-[#0b0e14] rounded-full p-1 border border-slate-800/80">
-            {["2 Weeks", "1 Month", "3 Months", "Discount", "None"].map(s => (
-               <button key={s} className="px-5 py-2 rounded-full text-slate-500 opacity-50 cursor-not-allowed">
-                 {s}
-               </button>
-            ))}
-          </div>
-        </div>
-
         <div className="flex flex-wrap items-center gap-4 mt-2 ml-[5.5rem]">
           <button onClick={() => setFilterNitro(!filterNitro)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterNitro ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' : 'bg-[#0b0e14] border-slate-800 text-slate-400 hover:border-slate-700'}`}>
             <Gift className="w-4 h-4" /> Nitro
@@ -251,12 +233,6 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
           <button onClick={() => setFilterPhone(!filterPhone)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterPhone ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' : 'bg-[#0b0e14] border-slate-800 text-slate-400 hover:border-slate-700'}`}>
             <Search className="w-4 h-4" /> Phone
           </button>
-          <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800 text-slate-400 text-sm font-medium">
-            Nitro days &ge; <input type="number" defaultValue={0} className="w-8 bg-transparent text-center text-white outline-none" disabled />
-          </div>
-          <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800 text-slate-400 text-sm font-medium">
-            Age days &ge; <input type="number" defaultValue={0} className="w-8 bg-transparent text-center text-white outline-none" disabled />
-          </div>
         </div>
       </div>
 
