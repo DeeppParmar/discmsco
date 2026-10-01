@@ -1,0 +1,49 @@
+{
+  "name": "discord-multi-tool",
+  "version": 2,
+  "buildCommand": "next build",
+  "devCommand": "next dev",
+  "env": {
+    "NEXT_PUBLIC_API_BASE": {
+      "description": "API base URL for frontend requests",
+      "required": false
+    },
+    "ENCRYPTION_KEY": {
+      "description": "AES-256 encryption key (32 chars, base64 encoded)",
+      "required": true
+    },
+    "KV_URL": {
+      "description": "Vercel KV Redis URL",
+      "required": true
+    },
+    "KV_REST_API_URL": {
+      "description": "Vercel KV REST API URL",
+      "required": true
+    },
+    "KV_REST_API_TOKEN": {
+      "description": "Vercel KV REST API Token",
+      "required": true
+    },
+    "INNGEST_EVENT_KEY": {
+      "description": "Inngest event key (evt_prod_xxxxx)",
+      "required": true
+    },
+    "INNGEST_BASE_URL": {
+      "description": "Inngest base URL",
+      "required": false,
+      "default": "https://inngest.com"
+    }
+  },
+  "functions": {
+    "pages/api/**/*.ts": {
+      "memory": 512,
+      "maxDuration": 60
+    }
+  },
+  "regions": ["sfo1"],
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  }
+}
