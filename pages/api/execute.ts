@@ -107,18 +107,7 @@ export default async function handler(
       });
     }
 
-    if (
-      (operation === OperationType.COMPLETE_QUEST ||
-        operation === OperationType.CLAIM_QUEST) &&
-      !accountCheck.emailVerified
-    ) {
-      return res.status(403).json({
-        success: false,
-        error: "Account email not verified. Quest operations require verified email",
-        statusCode: 403,
-        timestamp: Date.now(),
-      });
-    }
+
 
     if (
       (operation === OperationType.COMPLETE_QUEST ||
