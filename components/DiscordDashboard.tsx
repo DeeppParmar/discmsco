@@ -360,12 +360,160 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
   );
 }
 
+interface QuestTokenResult {
+  email: string;
+  originalLine: string;
+  token: string;
+  tokenHash: string;
+  status: "pending" | "validating" | "valid" | "invalid" | "running" | "success" | "error";
+  username?: string;
+  error?: string;
+  questResult?: { enrolled?: boolean; completed?: boolean; claimed?: boolean };
+}
+
 function QuestView({ onBack }: { onBack: () => void }) {
+  const [tokenInput, setTokenInput] = useState("");
+  const [questId, setQuestId] = useState("");
+  const [tokens, setTokens] = useState<QuestTokenResult[]>([]);
+  const [validating, setValidating] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [operation, setOperation] = useState<"COMPLETE_QUEST" | "CLAIM_QUEST">("COMPLETE_QUEST");
+
+  const validTokens = useMemo(() => tokens.filter(t => t.status === "valid" || t.status === "success" || t.status === "error"), [tokens]);
+  const successCount = useMemo(() => tokens.filter(t => t.status === "success").length, [tokens]);
+  const errorCount = useMemo(() => tokens.filter(t => t.status === "error").length, [tokens]);
+
+  const handleValidate = async () => {
+    if (!tokenInput.trim()) return;
+    setValidating(true);
+
+    const lines = tokenInput.split("\n").map(l => l.trim()).filter(l => l);
+    if (lines.length === 0) {
+      setValidating(false);
+      return;
+    }
+
+    const initialTokens: QuestTokenResult[] = lines.map(line => {
+      const parts = line.split(":");
+      let email = "Unknown";
+      let token = line;
+      if (parts.length >= 3) {
+        email = parts[0];
+        token = parts[parts.length - 1];
+      }
+      return { email, originalLine: line, token, tokenHash: "", status: "validating" as const, };
+    });
+
+    setTokens(initialTokens);
+
+    await Promise.all(
+      initialTokens.map(async (tokenObj, idx) => {
+        try {
+          const response = await fetch("/api/validate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: tokenObj.originalLine }),
+          });
+          const data = await response.json();
+          setTokens(prev => {
+            const updated = [...prev];
+            if (data.success && data.data?.status !== "error") {
+              updated[idx] = {
+                ...updated[idx],
+                tokenHash: data.data?.tokenHash || "",
+                status: "valid",
+                username: data.data?.result?.user?.username,
+              };
+            } else {
+              updated[idx] = {
+                ...updated[idx],
+                status: "invalid",
+                error: data.error || data.data?.error || "Invalid token",
+              };
+            }
+            return updated;
+          });
+        } catch (err) {
+          setTokens(prev => {
+            const updated = [...prev];
+            updated[idx] = { ...updated[idx], status: "invalid", error: "Validation failed" };
+            return updated;
+          });
+        }
+      })
+    );
+
+    setValidating(false);
+  };
+
+  const handleRunQuests = async () => {
+    if (!questId.trim()) return;
+    const eligible = tokens.filter(t => t.status === "valid");
+    if (eligible.length === 0) return;
+
+    setRunning(true);
+
+    // Mark eligible tokens as running
+    setTokens(prev => prev.map(t => t.status === "valid" ? { ...t, status: "running" as const } : t));
+
+    await Promise.all(
+      tokens.map(async (tokenObj, idx) => {
+        if (tokenObj.status !== "running" && tokenObj.status !== "valid") return;
+        try {
+          const response = await fetch("/api/execute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              tokenHash: tokenObj.tokenHash,
+              operation,
+              questId: questId.trim(),
+              token: tokenObj.token,
+              email: tokenObj.email,
+            }),
+          });
+          const data = await response.json();
+          setTokens(prev => {
+            const updated = [...prev];
+            if (data.success && data.data?.status === "success") {
+              updated[idx] = {
+                ...updated[idx],
+                status: "success",
+                questResult: { enrolled: true, completed: true, claimed: operation === "CLAIM_QUEST" },
+              };
+            } else {
+              updated[idx] = {
+                ...updated[idx],
+                status: "error",
+                error: data.error || data.data?.error || "Quest operation failed",
+              };
+            }
+            return updated;
+          });
+        } catch (err) {
+          setTokens(prev => {
+            const updated = [...prev];
+            updated[idx] = { ...updated[idx], status: "error", error: "Request failed" };
+            return updated;
+          });
+        }
+      })
+    );
+
+    setRunning(false);
+  };
+
+  const handleClear = () => {
+    setTokens([]);
+    setTokenInput("");
+    setQuestId("");
+  };
+
   return (
     <div className="max-w-5xl mx-auto p-6 md:p-12">
       <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition font-medium text-sm bg-[#151924] px-4 py-2 rounded-full border border-slate-800 hover:bg-slate-800 w-fit">
         <ArrowLeft className="w-4 h-4" /> Back to Dashboard
       </button>
+
       <div className="flex items-center gap-5 mb-10">
         <div className="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.3)]">
           <Target className="w-7 h-7" />
@@ -375,11 +523,150 @@ function QuestView({ onBack }: { onBack: () => void }) {
           <p className="text-slate-400 text-sm">Enroll and claim Discord quests automatically.</p>
         </div>
       </div>
-      <div className="bg-[#151924] border border-slate-800 rounded-3xl p-16 text-center shadow-xl">
-        <Target className="w-16 h-16 text-slate-700 mx-auto mb-6" />
-        <h2 className="text-xl text-white font-bold mb-3">Quest Automator</h2>
-        <p className="text-slate-500 max-w-md mx-auto">This section is reserved for bulk Quest completing logic. Please check valid tokens first before proceeding to claim quests.</p>
+
+      {/* Step 1: Token Input */}
+      <div className="bg-[#151924] border border-slate-800 rounded-3xl p-8 mb-6 shadow-xl">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-8 h-8 rounded-full bg-purple-500/15 text-purple-400 flex items-center justify-center text-sm font-bold border border-purple-500/20">1</div>
+          <h2 className="text-white font-bold text-lg">Paste Tokens</h2>
+          {tokens.length > 0 && (
+            <div className="ml-auto flex items-center gap-3 text-xs font-semibold">
+              <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">{tokens.filter(t => t.status === "valid" || t.status === "success").length} Valid</span>
+              <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full border border-rose-500/20">{tokens.filter(t => t.status === "invalid").length} Invalid</span>
+            </div>
+          )}
+        </div>
+        <textarea
+          value={tokenInput}
+          onChange={e => setTokenInput(e.target.value)}
+          placeholder="email:password:token (one per line)"
+          disabled={tokens.length > 0}
+          className="w-full h-36 bg-[#0b0e14] border border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-all resize-none font-mono mb-5 disabled:opacity-50"
+        />
+        <div className="flex gap-3">
+          <button
+            onClick={handleValidate}
+            disabled={validating || !tokenInput.trim() || tokens.length > 0}
+            className="flex-1 bg-[#1e2536] hover:bg-[#252d43] border border-slate-700 disabled:opacity-50 text-slate-300 px-6 py-3.5 rounded-2xl font-semibold transition-all flex items-center justify-center gap-2 shadow-sm"
+          >
+            {validating ? <><Loader2 className="w-5 h-5 animate-spin" /> Validating...</> : <><ShieldCheck className="w-5 h-5" /> Validate Tokens</>}
+          </button>
+          {tokens.length > 0 && (
+            <button
+              onClick={handleClear}
+              className="bg-[#1e2536] hover:bg-[#252d43] border border-slate-700 text-slate-400 hover:text-rose-400 px-5 py-3.5 rounded-2xl font-semibold transition-all flex items-center justify-center gap-2"
+            >
+              <RotateCcw className="w-4 h-4" /> Reset
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* Step 2: Quest Configuration */}
+      <div className={`bg-[#151924] border border-slate-800 rounded-3xl p-8 mb-6 shadow-xl transition-opacity ${validTokens.length === 0 ? 'opacity-40 pointer-events-none' : ''}`}>
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-8 h-8 rounded-full bg-purple-500/15 text-purple-400 flex items-center justify-center text-sm font-bold border border-purple-500/20">2</div>
+          <h2 className="text-white font-bold text-lg">Configure Quest</h2>
+        </div>
+
+        <div className="mb-5">
+          <label className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2 block">Quest ID</label>
+          <input
+            type="text"
+            value={questId}
+            onChange={e => setQuestId(e.target.value)}
+            placeholder="Enter the Discord Quest ID"
+            className="w-full bg-[#0b0e14] border border-slate-800 rounded-2xl px-5 py-3.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-all font-mono"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3 block">Operation</label>
+          <div className="flex bg-[#0b0e14] rounded-full p-1 border border-slate-800/80 w-fit">
+            <button
+              onClick={() => setOperation("COMPLETE_QUEST")}
+              className={`px-6 py-2.5 rounded-full transition-all text-sm font-semibold flex items-center gap-2 ${operation === "COMPLETE_QUEST" ? 'bg-[#1a2133] border border-[#2a3449] text-white shadow-sm' : 'text-slate-400 hover:text-slate-200 border border-transparent'}`}
+            >
+              <Zap className="w-4 h-4" /> Complete Quest
+            </button>
+            <button
+              onClick={() => setOperation("CLAIM_QUEST")}
+              className={`px-6 py-2.5 rounded-full transition-all text-sm font-semibold flex items-center gap-2 ${operation === "CLAIM_QUEST" ? 'bg-[#1a2133] border border-[#2a3449] text-white shadow-sm' : 'text-slate-400 hover:text-slate-200 border border-transparent'}`}
+            >
+              <Gift className="w-4 h-4" /> Complete & Claim
+            </button>
+          </div>
+        </div>
+
+        <button
+          onClick={handleRunQuests}
+          disabled={running || !questId.trim() || validTokens.length === 0}
+          className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 disabled:from-slate-700 disabled:to-slate-700 text-white px-6 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-purple-500/20 text-sm"
+        >
+          {running ? (
+            <><Loader2 className="w-5 h-5 animate-spin" /> Running on {tokens.filter(t => t.status === "running").length} tokens...</>
+          ) : (
+            <><Target className="w-5 h-5" /> Run Quest on {validTokens.length} Token{validTokens.length !== 1 ? 's' : ''}</>
+          )}
+        </button>
+      </div>
+
+      {/* Step 3: Results */}
+      {tokens.length > 0 && (
+        <div className="bg-[#151924] border border-slate-800 rounded-3xl p-8 shadow-xl">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-full bg-purple-500/15 text-purple-400 flex items-center justify-center text-sm font-bold border border-purple-500/20">3</div>
+            <h2 className="text-white font-bold text-lg">Results</h2>
+            <div className="ml-auto flex items-center gap-3 text-xs font-semibold">
+              <span className="text-slate-300 bg-slate-700/30 px-3 py-1.5 rounded-full border border-slate-700/50">{tokens.length} Total</span>
+              {successCount > 0 && <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {successCount}</span>}
+              {errorCount > 0 && <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full border border-rose-500/20 flex items-center gap-1"><XCircle className="w-3 h-3" /> {errorCount}</span>}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {tokens.map((token, idx) => (
+              <div key={idx} className="group p-4 rounded-2xl border bg-[#0b0e14]/60 backdrop-blur-md border-slate-800/80 hover:border-purple-500/30 hover:bg-[#0b0e14] transition-all duration-300 relative overflow-hidden">
+                <div className={`absolute left-0 top-0 bottom-0 w-[3px] transition-opacity ${
+                  token.status === 'success' ? 'bg-gradient-to-b from-emerald-400 to-emerald-600 opacity-100' :
+                  token.status === 'error' || token.status === 'invalid' ? 'bg-gradient-to-b from-rose-400 to-rose-600 opacity-100' :
+                  token.status === 'valid' ? 'bg-gradient-to-b from-blue-400 to-blue-600 opacity-100' :
+                  token.status === 'running' ? 'bg-gradient-to-b from-purple-400 to-purple-600 opacity-100 animate-pulse' :
+                  'opacity-0'
+                }`}></div>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <p className="font-semibold text-sm text-slate-200 font-mono">{token.email}</p>
+                    {token.username && <span className="text-slate-400 text-xs bg-[#1a2133] px-2 py-1 rounded-lg border border-slate-700/50">@{token.username}</span>}
+                  </div>
+                  <div className="shrink-0">
+                    {token.status === "validating" && <span className="text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-500/20 flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Validating</span>}
+                    {token.status === "valid" && <span className="text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-500/20 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Ready</span>}
+                    {token.status === "invalid" && <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-rose-500/20 flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5" /> Invalid</span>}
+                    {token.status === "running" && <span className="text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-purple-500/20 flex items-center gap-1.5 animate-pulse"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Running</span>}
+                    {token.status === "success" && <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)] flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Completed</span>}
+                    {token.status === "error" && <span className="text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-rose-500/20 flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5" /> Failed</span>}
+                    {token.status === "pending" && <span className="text-slate-500 bg-slate-500/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-slate-500/20 flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Pending</span>}
+                  </div>
+                </div>
+                {token.error && (
+                  <div className="mt-3 text-xs text-rose-300 bg-rose-500/10 px-3 py-2 rounded-xl border border-rose-500/20 flex items-center gap-2">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{token.error}</span>
+                  </div>
+                )}
+                {token.questResult && (
+                  <div className="mt-3 flex items-center gap-2 text-xs">
+                    {token.questResult.enrolled && <span className="text-blue-300 bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">Enrolled</span>}
+                    {token.questResult.completed && <span className="text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">Completed</span>}
+                    {token.questResult.claimed && <span className="text-fuchsia-300 bg-fuchsia-500/10 px-2.5 py-1 rounded-lg border border-fuchsia-500/20">Claimed</span>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
