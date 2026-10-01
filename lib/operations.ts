@@ -198,9 +198,10 @@ export async function claimQuest(
     }
 
     try {
-      // Enroll and complete quest
+      // Enroll, complete, and claim quest
       await discordService.enrollQuest(token, questId);
       await discordService.completeQuest(token, questId);
+      await discordService.claimQuestReward(token, questId);
 
       // Update job
       await dbService.updateJobStatus(

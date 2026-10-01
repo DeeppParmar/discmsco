@@ -135,7 +135,7 @@ class DiscordService {
           : await session.patch(url, { json, headers });
 
     return {
-      status_code: response.status_code || response.status || 200,
+      status_code: response.status_code ?? response.status ?? 0,
       text: async () => response.text || "",
       json: async () => {
         try {
@@ -221,7 +221,7 @@ class DiscordService {
       DEFAULT_BACKOFF
     );
 
-    if (response.status_code === 401) {
+    if (response.status_code === 401 || response.status_code === 0) {
       throw new DiscordAPIError(401, "Invalid token", false);
     }
 
@@ -229,7 +229,18 @@ class DiscordService {
       throw new DiscordAPIError(403, "Account locked or suspended", false);
     }
 
-    return await response.json();
+    if (response.status_code !== 200) {
+      throw new DiscordAPIError(response.status_code, `Unexpected response: ${response.status_code}`, false);
+    }
+
+    const user = await response.json();
+
+    // Validate the response actually contains a user object
+    if (!user || !user.id || !user.username) {
+      throw new DiscordAPIError(401, "Invalid token - no user data returned", false);
+    }
+
+    return user;
   }
 
   async getSubscriptions(token: string): Promise<any[]> {
@@ -437,6 +448,30 @@ class DiscordService {
     }
 
     return true;
+  }
+
+  async claimQuestReward(token: string, questId: string): Promise<boolean> {
+    const session = await this.createSession(token);
+    
+    // We pass location: 1 in payload based on Discord API requirements for claiming
+    const response = await this.makeRequest(
+      session,
+      "POST",
+      `${DISCORD_API_BASE}/quests/${questId}/claim-reward`,
+      DEFAULT_BACKOFF,
+      { location: 1 }
+    );
+
+    if (response.status_code === 401 || response.status_code === 0) {
+      throw new DiscordAPIError(401, "Invalid token", false);
+    }
+
+    if (response.status_code >= 400 && response.status_code !== 401) {
+      console.warn(`Failed to claim reward for quest ${questId}: ${response.status_code}`);
+      // Usually means already claimed or not completed
+    }
+
+    return response.status_code === 200;
   }
 
   private async makeRequest(

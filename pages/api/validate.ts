@@ -61,6 +61,23 @@ export default async function handler(
 
     const cached = await dbService.getAccountCheckCache(parsedToken.hash);
     if (cached) {
+      // If the cached result shows the token is invalid/locked, don't return it as valid
+      if (cached.status === TokenStatus.LOCKED || cached.isLocked) {
+        return res.status(200).json({
+          success: true,
+          data: {
+            jobId,
+            tokenHash: parsedToken.hash,
+            cached: true,
+            status: "error",
+            error: "Account locked or suspended",
+            result: cached,
+          },
+          statusCode: 200,
+          timestamp: Date.now(),
+        });
+      }
+
       await dbService.storeTokenSession(
         parsedToken.hash,
         parsedToken.email,
@@ -73,6 +90,7 @@ export default async function handler(
           jobId,
           tokenHash: parsedToken.hash,
           cached: true,
+          status: "ready",
           result: cached,
         },
         statusCode: 200,
