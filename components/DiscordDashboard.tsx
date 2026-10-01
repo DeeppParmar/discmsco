@@ -7,6 +7,7 @@ import { CheckCircle2, XCircle, Clock, AlertCircle, ShieldCheck, Gift, Zap, Targ
 interface TokenResult {
   hash: string;
   email: string;
+  originalLine: string;
   jobId: string;
   status: "pending" | "validating" | "ready" | "error";
   checkResult?: AccountCheckResult;
@@ -89,6 +90,7 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
   const [filterNitro, setFilterNitro] = useState(false);
   const [filterAvatar, setFilterAvatar] = useState(false);
   const [filterPhone, setFilterPhone] = useState(false);
+  const [filterEmail, setFilterEmail] = useState(false);
 
   const validateToken = useCallback(async (tokenStr: string) => {
     try {
@@ -133,10 +135,11 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
   }, []);
 
   const handlePaste = async () => {
+    if (!tokenInput.trim()) return;
     setLoading(true);
-    const lines = tokenInput.split("\n").map((l) => l.trim()).filter((l) => l && l.includes(":"));
+    const lines = tokenInput.split("\n").map((l) => l.trim()).filter((l) => l);
     if (lines.length === 0) {
-      alert("No valid token format found. Use: email:password:token");
+      alert("No valid token format found.");
       setLoading(false);
       return;
     }
@@ -144,20 +147,24 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
     const newTokens: TokenResult[] = [];
     for (const line of lines) {
       const parts = line.split(":");
+      let email = "Unknown";
       if (parts.length >= 3) {
-        const [email, password, token] = parts;
-        const result = await validateToken(line);
-        newTokens.push({
-          hash: result.hash || "",
-          email,
-          jobId: result.jobId || "",
-          status: result.error ? "error" : "pending",
-          error: result.error,
-        });
+        email = parts[0];
+      } else if (parts.length === 1 && line.length > 30) {
+        email = "Token";
       }
+
+      const result = await validateToken(line);
+      newTokens.push({
+        hash: result.hash || "",
+        email,
+        originalLine: line,
+        jobId: result.jobId || "",
+        status: result.error ? "error" : "pending",
+        error: result.error,
+      });
     }
     setTokens(newTokens);
-    setTokenInput("");
     setLoading(false);
   };
 
@@ -165,14 +172,29 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
     return tokens.filter(t => {
       if (filterStatus !== "All") {
         if (filterStatus === "Valid" && t.status !== "ready") return false;
-        if (filterStatus === "Error" && t.status === "ready") return false; // Error handles pending/error/validating
+        if (filterStatus === "Error" && t.status === "ready") return false; 
       }
       if (filterNitro && !t.checkResult?.hasNitro) return false;
       if (filterAvatar && !t.checkResult?.hasAvatar) return false;
       if (filterPhone && !t.checkResult?.phoneVerified) return false;
+      if (filterEmail && !t.checkResult?.emailVerified) return false;
       return true;
     });
-  }, [tokens, filterStatus, filterNitro, filterAvatar, filterPhone]);
+  }, [tokens, filterStatus, filterNitro, filterAvatar, filterPhone, filterEmail]);
+
+  const handleDownload = () => {
+    if (filteredTokens.length === 0) return;
+    const textContent = filteredTokens.map(t => t.originalLine).join("\n");
+    const blob = new Blob([textContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `tokens_${filterStatus.toLowerCase()}_${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6 md:p-12">
@@ -200,79 +222,113 @@ function TokenCheckerView({ onBack }: { onBack: () => void }) {
         <button
           onClick={handlePaste}
           disabled={loading || !tokenInput.trim()}
-          className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white disabled:text-slate-500 px-6 py-3.5 rounded-2xl font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.2)] disabled:shadow-none"
+          className="w-full bg-[#1e2536] hover:bg-[#252d43] border border-slate-700 disabled:opacity-50 text-slate-300 px-6 py-3.5 rounded-2xl font-semibold transition-all flex items-center justify-center gap-2 shadow-sm"
         >
           {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Checking...</> : "Start Checking"}
         </button>
       </div>
 
-      {/* Filter Bar mimicking user screenshot */}
-      <div className="bg-[#151924] border border-slate-800 rounded-3xl p-8 mb-8 shadow-xl flex flex-col gap-6">
-        <div className="flex flex-wrap items-center gap-6 text-sm font-semibold">
-          <span className="text-slate-500 w-14 text-right">Status</span>
-          <div className="flex flex-wrap bg-[#0b0e14] rounded-full p-1 border border-slate-800/80">
-            {["All", "Valid", "Locked", "Invalid", "Error"].map(s => (
-              <button 
-                key={s}
-                onClick={() => setFilterStatus(s)}
-                className={`px-5 py-2 rounded-full transition-all ${filterStatus === s ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'}`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-        
-        <div className="flex flex-wrap items-center gap-4 mt-2 ml-[5.5rem]">
-          <button onClick={() => setFilterNitro(!filterNitro)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterNitro ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' : 'bg-[#0b0e14] border-slate-800 text-slate-400 hover:border-slate-700'}`}>
-            <Gift className="w-4 h-4" /> Nitro
-          </button>
-          <button onClick={() => setFilterAvatar(!filterAvatar)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterAvatar ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' : 'bg-[#0b0e14] border-slate-800 text-slate-400 hover:border-slate-700'}`}>
-            <Fingerprint className="w-4 h-4" /> Avatar
-          </button>
-          <button onClick={() => setFilterPhone(!filterPhone)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterPhone ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' : 'bg-[#0b0e14] border-slate-800 text-slate-400 hover:border-slate-700'}`}>
-            <Search className="w-4 h-4" /> Phone
-          </button>
-        </div>
-      </div>
-
       {tokens.length > 0 && (
-        <div className="bg-[#151924] border border-slate-800 rounded-3xl p-8 shadow-xl">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-            Results 
-            <span className="bg-[#0b0e14] text-slate-400 px-3 py-1 rounded-full text-sm border border-slate-800">{filteredTokens.length}</span>
-          </h2>
-          <div className="space-y-4">
-            {filteredTokens.map((token, idx) => (
-              <div key={idx} className="p-5 rounded-2xl border bg-[#0b0e14] border-slate-800/80 hover:border-slate-700 transition-colors">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-semibold text-[15px] text-slate-200">{token.email}</p>
-                  </div>
-                  <div className="shrink-0 flex items-center gap-3">
-                     {token.status === "ready" ? <span className="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-emerald-500/20 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5"/> Valid</span> :
-                     token.status === "error" ? <span className="bg-rose-500/10 text-rose-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-rose-500/20 flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5"/> Error</span> :
-                     <span className="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-500/20 flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin"/> Checking</span>}
-                  </div>
-                </div>
-                {token.error && (
-                  <div className="mt-4 text-sm text-rose-400 bg-rose-500/10 px-4 py-3 rounded-xl border border-rose-500/20">
-                    {token.error}
-                  </div>
-                )}
-                {token.checkResult && (
-                  <div className="mt-5 pt-5 border-t border-slate-800/80 flex flex-wrap gap-4 text-sm font-medium">
-                    <span className="text-slate-300 font-bold">@{token.checkResult.user?.username}</span>
-                    {token.checkResult.hasNitro && <span className="text-fuchsia-400 flex items-center gap-1.5 bg-fuchsia-500/10 px-2.5 py-1 rounded-lg"><Gift className="w-4 h-4"/> Nitro</span>}
-                    {token.checkResult.phoneVerified && <span className="text-blue-400 flex items-center gap-1.5 bg-blue-500/10 px-2.5 py-1 rounded-lg"><span className="w-4 h-4 flex items-center justify-center border border-blue-400 rounded text-[10px] font-bold">P</span> Phone</span>}
-                    {token.checkResult.hasAvatar && <span className="text-indigo-400 flex items-center gap-1.5 bg-indigo-500/10 px-2.5 py-1 rounded-lg"><span className="w-4 h-4 flex items-center justify-center border border-indigo-400 rounded-full text-[10px] font-bold">A</span> Avatar</span>}
-                    {token.checkResult.accountAge && <span className="text-slate-400 flex items-center gap-1.5 bg-slate-800 px-2.5 py-1 rounded-lg"><Clock className="w-4 h-4"/> {token.checkResult.accountAge}</span>}
-                  </div>
-                )}
+        <>
+          {/* Filter Bar mimicking user screenshot exactly */}
+          <div className="bg-[#151924] border border-slate-800 rounded-3xl p-8 mb-8 shadow-xl flex flex-col gap-6">
+            <div className="flex flex-wrap items-center gap-6 text-sm font-semibold">
+              <span className="text-slate-500 w-14 text-right">Status</span>
+              <div className="flex flex-wrap bg-[#0b0e14] rounded-full p-1 border border-slate-800/80">
+                {["All", "Valid", "Locked", "Invalid", "Error"].map(s => (
+                  <button 
+                    key={s}
+                    onClick={() => setFilterStatus(s)}
+                    className={`px-5 py-2 rounded-full transition-all ${filterStatus === s ? 'bg-[#1a2133] border border-[#2a3449] text-white shadow-sm' : 'text-slate-400 hover:text-slate-200 border border-transparent'}`}
+                  >
+                    {s}
+                  </button>
+                ))}
               </div>
-            ))}
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-6 text-sm font-semibold">
+              <span className="text-slate-500 w-14 text-right">Trial</span>
+              <div className="flex flex-wrap bg-[#0b0e14] rounded-full p-1 border border-slate-800/80">
+                {["2 Weeks", "1 Month", "3 Months", "Discount", "None"].map(s => (
+                  <button key={s} className="px-5 py-2 rounded-full text-slate-500 border border-transparent opacity-50 cursor-not-allowed">
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4 mt-2 ml-[5.5rem]">
+              <button onClick={() => setFilterNitro(!filterNitro)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterNitro ? 'bg-[#1a2133] border-[#2a3449] text-white' : 'bg-[#0b0e14] border-slate-800/80 text-slate-400 hover:border-slate-700'}`}>
+                <Gift className="w-4 h-4" /> Nitro
+              </button>
+              <button onClick={() => setFilterAvatar(!filterAvatar)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterAvatar ? 'bg-[#1a2133] border-[#2a3449] text-white' : 'bg-[#0b0e14] border-slate-800/80 text-slate-400 hover:border-slate-700'}`}>
+                <Fingerprint className="w-4 h-4" /> Avatar
+              </button>
+              <button onClick={() => setFilterPhone(!filterPhone)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterPhone ? 'bg-[#1a2133] border-[#2a3449] text-white' : 'bg-[#0b0e14] border-slate-800/80 text-slate-400 hover:border-slate-700'}`}>
+                <Search className="w-4 h-4" /> Phone
+              </button>
+              <button onClick={() => setFilterEmail(!filterEmail)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm font-medium ${filterEmail ? 'bg-[#1a2133] border-[#2a3449] text-white' : 'bg-[#0b0e14] border-slate-800/80 text-slate-400 hover:border-slate-700'}`}>
+                <CheckCircle2 className="w-4 h-4" /> Email
+              </button>
+
+              <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800/80 text-slate-400 text-sm font-medium">
+                Nitro days &ge; <input type="number" defaultValue={0} className="w-8 bg-transparent border border-slate-700 rounded px-1 text-center text-white outline-none" disabled />
+              </div>
+              <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-[#0b0e14] border-slate-800/80 text-slate-400 text-sm font-medium">
+                Age days &ge; <input type="number" defaultValue={0} className="w-8 bg-transparent border border-slate-700 rounded px-1 text-center text-white outline-none" disabled />
+              </div>
+            </div>
           </div>
-        </div>
+
+          {/* Results list */}
+          <div className="bg-[#151924] border border-slate-800 rounded-3xl p-8 shadow-xl">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-white flex items-center gap-3">
+                Results 
+                <span className="bg-transparent border border-slate-700 text-slate-300 px-3 py-1 rounded-full text-sm">{filteredTokens.length}</span>
+              </h2>
+              <button
+                onClick={handleDownload}
+                className="bg-[#1e2536] hover:bg-[#252d43] border border-slate-700 text-slate-300 px-5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"
+              >
+                Download Filtered
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {filteredTokens.map((token, idx) => (
+                <div key={idx} className="p-5 rounded-2xl border bg-[#0b0e14] border-slate-800/80 hover:border-slate-700 transition-colors">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-semibold text-[15px] text-slate-200">{token.email}</p>
+                    </div>
+                    <div className="shrink-0 flex items-center gap-3">
+                       {token.status === "ready" ? <span className="text-emerald-500 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide border border-emerald-500/30 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5"/> Valid</span> :
+                       token.status === "error" ? <span className="text-rose-500 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide border border-rose-500/30 flex items-center gap-1.5"><XCircle className="w-3.5 h-3.5"/> Error</span> :
+                       <span className="text-blue-400 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide border border-blue-500/30 flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin"/> Checking</span>}
+                    </div>
+                  </div>
+                  {token.error && (
+                    <div className="mt-4 text-sm text-rose-400 bg-rose-500/5 px-4 py-3 rounded-xl border border-rose-500/20">
+                      {token.error}
+                    </div>
+                  )}
+                  {token.checkResult && (
+                    <div className="mt-5 pt-5 border-t border-slate-800/80 flex flex-wrap gap-4 text-sm font-medium">
+                      <span className="text-slate-300 font-bold">@{token.checkResult.user?.username}</span>
+                      {token.checkResult.accountAge && <span className="text-slate-300 flex items-center gap-1.5 bg-[#151924] px-2.5 py-1 rounded-md border border-slate-800"><Clock className="w-4 h-4 text-slate-400"/> {token.checkResult.accountAge}</span>}
+                      {token.checkResult.hasNitro && <span className="text-fuchsia-400 flex items-center gap-1.5 bg-fuchsia-500/10 px-2.5 py-1 rounded-md"><Gift className="w-4 h-4"/> Nitro</span>}
+                      {token.checkResult.phoneVerified && <span className="text-blue-400 flex items-center gap-1.5 bg-blue-500/10 px-2.5 py-1 rounded-md"> Phone</span>}
+                      {token.checkResult.emailVerified && <span className="text-emerald-400 flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-1 rounded-md"> Email Verified</span>}
+                      {token.checkResult.hasAvatar && <span className="text-indigo-400 flex items-center gap-1.5 bg-indigo-500/10 px-2.5 py-1 rounded-md"> Avatar</span>}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
