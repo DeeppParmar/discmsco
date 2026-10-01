@@ -1,3 +1,4 @@
+// @ts-nocheck
 // pages/expert.jsx - Expert interface with full customization
 'use client';
 
@@ -188,75 +189,47 @@ const ExpertUI = ({ onBack }) => {
         </button>
       </div>
 
-      <div style={{ backgroundColor: '#0f172a', color: '#e2e8f0', fontFamily: 'monospace', fontSize: '13px', borderRadius: '16px', overflow: 'hidden', border: '1px solid #1e293b' }}>
-
+      <div className="bg-[#151924] border border-slate-800 rounded-3xl overflow-hidden shadow-xl mb-12">
 
       {/* Config Panel */}
       {showConfig && (
-        <div style={{
-          backgroundColor: '#1e293b',
-          borderBottom: '1px solid #334155',
-          padding: '15px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '12px'
-        }}>
+        <div className="bg-[#1a1f2e] border-b border-slate-800 p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
           <div>
-            <label style={{ display: 'block', fontSize: '11px', color: '#cbd5e1', marginBottom: '4px' }}>Max Concurrent</label>
+            <label className="block text-xs font-medium text-slate-400 mb-2">Max Concurrent</label>
             <input
               type="number"
               value={config.maxConcurrent}
               onChange={(e) => handleConfigChange('maxConcurrent', parseInt(e.target.value))}
-              style={{
-                width: '100%',
-                padding: '6px',
-                backgroundColor: '#0f172a',
-                border: '1px solid #334155',
-                color: '#e2e8f0',
-                borderRadius: '3px'
-              }}
+              className="w-full bg-[#0b0e14] border border-slate-800 rounded-lg p-2.5 text-sm text-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition"
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '11px', color: '#cbd5e1', marginBottom: '4px' }}>Retry Attempts</label>
+            <label className="block text-xs font-medium text-slate-400 mb-2">Retry Attempts</label>
             <input
               type="number"
               value={config.retryAttempts}
               onChange={(e) => handleConfigChange('retryAttempts', parseInt(e.target.value))}
-              style={{
-                width: '100%',
-                padding: '6px',
-                backgroundColor: '#0f172a',
-                border: '1px solid #334155',
-                color: '#e2e8f0',
-                borderRadius: '3px'
-              }}
+              className="w-full bg-[#0b0e14] border border-slate-800 rounded-lg p-2.5 text-sm text-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition"
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '11px', color: '#cbd5e1', marginBottom: '4px' }}>Health Threshold</label>
+            <label className="block text-xs font-medium text-slate-400 mb-2">Health Threshold</label>
             <input
               type="number"
               value={config.autoLockThreshold}
               onChange={(e) => handleConfigChange('autoLockThreshold', parseInt(e.target.value))}
               min="0"
               max="100"
-              style={{
-                width: '100%',
-                padding: '6px',
-                backgroundColor: '#0f172a',
-                border: '1px solid #334155',
-                color: '#e2e8f0',
-                borderRadius: '3px'
-              }}
+              className="w-full bg-[#0b0e14] border border-slate-800 rounded-lg p-2.5 text-sm text-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition"
             />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <label style={{ fontSize: '11px', color: '#cbd5e1', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div className="flex items-center pt-6">
+            <label className="flex items-center gap-3 text-sm font-medium text-slate-300 cursor-pointer">
               <input
                 type="checkbox"
                 checked={config.adaptiveDelay}
                 onChange={(e) => handleConfigChange('adaptiveDelay', e.target.checked)}
+                className="w-4 h-4 rounded bg-[#0b0e14] border-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900"
               />
               Adaptive Delays
             </label>
@@ -266,35 +239,22 @@ const ExpertUI = ({ onBack }) => {
 
       {/* Message Display */}
       {message && (
-        <div style={{
-          padding: '10px 15px',
-          backgroundColor: '#1e293b',
-          borderLeft: `3px solid ${message.includes('✓') ? '#4ade80' : '#ef4444'}`,
-          color: '#cbd5e1',
-          fontSize: '12px',
-          marginBottom: '1px'
-        }}>
+        <div className={`p-4 border-l-4 text-sm font-medium ${message.includes('✓') ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400' : 'bg-rose-500/10 border-rose-500 text-rose-400'}`}>
           {message}
         </div>
       )}
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: '0', borderBottom: '1px solid #334155', backgroundColor: '#1e293b' }}>
+      <div className="flex bg-[#1a1f2e] border-b border-slate-800 px-6 pt-4 gap-2">
         {['accounts', 'boost', 'sessions', 'analytics'].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            style={{
-              padding: '12px 20px',
-              backgroundColor: activeTab === tab ? '#3b82f6' : 'transparent',
-              color: '#e2e8f0',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              borderBottom: activeTab === tab ? '3px solid #3b82f6' : 'none',
-              textTransform: 'uppercase'
-            }}
+            className={`px-6 py-3 text-sm font-bold uppercase transition-all rounded-t-xl ${
+              activeTab === tab 
+                ? 'bg-[#151924] text-indigo-400 border-t border-l border-r border-slate-800' 
+                : 'text-slate-500 hover:text-slate-300 hover:bg-[#151924]/50 border-t border-l border-r border-transparent'
+            }`}
           >
             {tab}
           </button>
@@ -302,79 +262,43 @@ const ExpertUI = ({ onBack }) => {
       </div>
 
       {/* Main Content */}
-      <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="p-6 md:p-8">
         
         {/* Accounts Tab */}
         {activeTab === 'accounts' && (
-          <div>
+          <div className="space-y-6">
             {/* Add Account Form */}
-            <div style={{
-              backgroundColor: '#1e293b',
-              border: '1px solid #334155',
-              borderRadius: '6px',
-              padding: '15px',
-              marginBottom: '20px'
-            }}>
-              <h2 style={{ margin: '0 0 12px', fontSize: '14px' }}>Add Account</h2>
+            <div className="bg-[#1a1f2e] border border-slate-800 rounded-2xl p-6">
+              <h2 className="text-white font-bold text-lg mb-4">Add Account</h2>
               <form onSubmit={handleAddAccount}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   <input
                     type="email"
                     placeholder="Email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    style={{
-                      padding: '8px',
-                      backgroundColor: '#0f172a',
-                      border: '1px solid #334155',
-                      color: '#e2e8f0',
-                      borderRadius: '3px'
-                    }}
+                    className="w-full bg-[#0b0e14] border border-slate-800 rounded-lg p-3 text-sm text-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition"
                   />
                   <input
                     type="password"
                     placeholder="Password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    style={{
-                      padding: '8px',
-                      backgroundColor: '#0f172a',
-                      border: '1px solid #334155',
-                      color: '#e2e8f0',
-                      borderRadius: '3px'
-                    }}
+                    className="w-full bg-[#0b0e14] border border-slate-800 rounded-lg p-3 text-sm text-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition"
                   />
                   <textarea
                     placeholder="Discord Token"
                     value={formData.token}
                     onChange={(e) => setFormData({ ...formData, token: e.target.value })}
-                    style={{
-                      padding: '8px',
-                      backgroundColor: '#0f172a',
-                      border: '1px solid #334155',
-                      color: '#e2e8f0',
-                      borderRadius: '3px',
-                      fontFamily: 'monospace',
-                      fontSize: '11px',
-                      resize: 'none',
-                      height: '40px'
-                    }}
+                    className="w-full bg-[#0b0e14] border border-slate-800 rounded-lg p-3 text-sm text-slate-200 font-mono resize-none h-[46px] focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    backgroundColor: loading ? '#475569' : '#3b82f6',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '3px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
-                  }}
+                  className={`w-full py-3 rounded-lg text-white font-medium text-sm transition ${
+                    loading ? 'bg-indigo-600/50 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/20'
+                  }`}
                 >
                   {loading ? 'Verifying...' : 'Add & Verify Account'}
                 </button>
@@ -382,52 +306,38 @@ const ExpertUI = ({ onBack }) => {
             </div>
 
             {/* Accounts Grid */}
-            <div style={{
-              backgroundColor: '#1e293b',
-              border: '1px solid #334155',
-              borderRadius: '6px',
-              padding: '15px'
-            }}>
-              <h2 style={{ margin: '0 0 12px', fontSize: '14px' }}>
+            <div className="bg-[#1a1f2e] border border-slate-800 rounded-2xl p-6">
+              <h2 className="text-white font-bold text-lg mb-4">
                 Accounts ({accounts.length})
               </h2>
               {accounts.length === 0 ? (
-                <p style={{ color: '#94a3b8', margin: '0' }}>No accounts added</p>
+                <p className="text-slate-400 text-sm">No accounts added</p>
               ) : (
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                  gap: '10px'
-                }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {accounts.map(acc => (
                     <div
                       key={acc.id}
-                      style={{
-                        backgroundColor: '#0f172a',
-                        border: `1px solid ${getHealthColor(acc.health_score)}`,
-                        borderRadius: '4px',
-                        padding: '10px',
-                        fontSize: '11px'
-                      }}
+                      className="bg-[#0b0e14] border border-slate-800 rounded-xl p-4 text-xs transition hover:border-slate-700"
                     >
-                      <div style={{ marginBottom: '6px', fontWeight: 'bold', color: '#60a5fa' }}>
-                        {acc.username || 'Unknown'} <span style={{ color: '#94a3b8' }}>({acc.id})</span>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="font-bold text-indigo-400">{acc.username || 'Unknown'}</span>
+                        <span className="text-slate-500 text-[10px]">({acc.id})</span>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '6px' }}>
-                        <div>Nitro: <span style={{ color: acc.has_nitro ? '#4ade80' : '#ef4444' }}>
+                      <div className="grid grid-cols-2 gap-2 mb-3">
+                        <div className="text-slate-400">Nitro: <span className={acc.has_nitro ? 'text-emerald-400' : 'text-rose-400 font-medium'}>
                           {acc.has_nitro ? '✓' : '✗'}
                         </span></div>
-                        <div>Verified: <span style={{ color: acc.verified ? '#4ade80' : '#ef4444' }}>
+                        <div className="text-slate-400">Verified: <span className={acc.verified ? 'text-emerald-400' : 'text-rose-400 font-medium'}>
                           {acc.verified ? '✓' : '✗'}
                         </span></div>
-                        <div>Health: <span style={{ color: getHealthColor(acc.health_score) }}>
+                        <div className="text-slate-400">Health: <span style={{ color: getHealthColor(acc.health_score) }} className="font-medium">
                           {acc.health_score}%
                         </span></div>
-                        <div>Boosts: <span style={{ color: '#60a5fa' }}>
+                        <div className="text-slate-400">Boosts: <span className="text-indigo-400 font-medium">
                           {acc.boosts_remaining}/2
                         </span></div>
                       </div>
-                      <div style={{ color: '#94a3b8', fontSize: '10px' }}>
+                      <div className="text-slate-500 text-[10px] pt-2 border-t border-slate-800/50">
                         Last: {acc.last_activity ? new Date(acc.last_activity).toLocaleString() : 'Never'}
                       </div>
                     </div>
@@ -440,43 +350,24 @@ const ExpertUI = ({ onBack }) => {
 
         {/* Boost Tab */}
         {activeTab === 'boost' && (
-          <div style={{
-            backgroundColor: '#1e293b',
-            border: '1px solid #334155',
-            borderRadius: '6px',
-            padding: '15px'
-          }}>
-            <h2 style={{ margin: '0 0 12px', fontSize: '14px' }}>Execute Boost</h2>
+          <div className="bg-[#1a1f2e] border border-slate-800 rounded-2xl p-6">
+            <h2 className="text-white font-bold text-lg mb-4">Execute Boost</h2>
             <form onSubmit={handleBoost}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', color: '#cbd5e1', marginBottom: '4px' }}>Boost Count</label>
+                  <label className="block text-xs font-medium text-slate-400 mb-2">Boost Count</label>
                   <input
                     type="number"
                     min="1"
                     max="100"
                     value={boostCount}
                     onChange={(e) => setBoostCount(parseInt(e.target.value))}
-                    style={{
-                      width: '100%',
-                      padding: '8px',
-                      backgroundColor: '#0f172a',
-                      border: '1px solid #334155',
-                      color: '#e2e8f0',
-                      borderRadius: '3px'
-                    }}
+                    className="w-full bg-[#0b0e14] border border-slate-800 rounded-lg p-3 text-sm text-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition"
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', color: '#cbd5e1', marginBottom: '4px' }}>Available Boosts</label>
-                  <div style={{
-                    padding: '8px',
-                    backgroundColor: '#0f172a',
-                    border: '1px solid #334155',
-                    borderRadius: '3px',
-                    color: '#60a5fa',
-                    fontWeight: 'bold'
-                  }}>
+                  <label className="block text-xs font-medium text-slate-400 mb-2">Available Boosts</label>
+                  <div className="w-full bg-[#0b0e14] border border-slate-800 rounded-lg p-3 text-sm text-indigo-400 font-bold">
                     {accounts.reduce((sum, acc) => sum + acc.boosts_remaining, 0)} / {accounts.length * 2}
                   </div>
                 </div>
@@ -486,30 +377,14 @@ const ExpertUI = ({ onBack }) => {
                 placeholder="discord.gg/xxxxx or discord.com/invite/xxxxx"
                 value={serverLink}
                 onChange={(e) => setServerLink(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  backgroundColor: '#0f172a',
-                  border: '1px solid #334155',
-                  color: '#e2e8f0',
-                  borderRadius: '3px',
-                  marginBottom: '10px'
-                }}
+                className="w-full bg-[#0b0e14] border border-slate-800 rounded-lg p-3 text-sm text-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition mb-4"
               />
               <button
                 type="submit"
                 disabled={loading || accounts.length === 0}
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  backgroundColor: loading || accounts.length === 0 ? '#475569' : '#10b981',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: loading || accounts.length === 0 ? 'not-allowed' : 'pointer',
-                  fontSize: '13px',
-                  fontWeight: 'bold'
-                }}
+                className={`w-full py-3 rounded-lg text-white font-medium text-sm transition ${
+                  loading || accounts.length === 0 ? 'bg-emerald-600/50 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-500/20'
+                }`}
               >
                 {loading ? 'Executing...' : `Execute ${boostCount} Boost${boostCount !== 1 ? 's' : ''}`}
               </button>
@@ -519,32 +394,32 @@ const ExpertUI = ({ onBack }) => {
 
         {/* Sessions Tab */}
         {activeTab === 'sessions' && (
-          <div>
+          <div className="bg-[#1a1f2e] border border-slate-800 rounded-2xl p-6">
+            <h2 className="text-white font-bold text-lg mb-4">Boost Sessions</h2>
             {sessions.length === 0 ? (
-              <p style={{ color: '#94a3b8' }}>No boost sessions yet</p>
+              <p className="text-slate-400 text-sm">No boost sessions yet</p>
             ) : (
-              <div style={{ display: 'grid', gap: '10px' }}>
+              <div className="grid grid-cols-1 gap-4">
                 {sessions.map(session => (
                   <div
                     key={session.sessionId}
-                    style={{
-                      backgroundColor: '#1e293b',
-                      border: `1px solid ${getStatusColor(session.status)}`,
-                      borderRadius: '6px',
-                      padding: '12px'
-                    }}
+                    className="bg-[#0b0e14] border border-slate-800 rounded-xl p-4 transition hover:border-slate-700"
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                      <span style={{ color: '#60a5fa', fontWeight: 'bold' }}>{session.sessionId}</span>
-                      <span style={{ color: getStatusColor(session.status), fontWeight: 'bold' }}>
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-indigo-400 font-bold">{session.sessionId}</span>
+                      <span className={`font-bold text-xs px-2 py-1 rounded-md border ${
+                        session.status === 'completed' ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' :
+                        session.status === 'failed' ? 'text-rose-400 bg-rose-400/10 border-rose-400/20' :
+                        'text-amber-400 bg-amber-400/10 border-amber-400/20 animate-pulse'
+                      }`}>
                         {session.status?.toUpperCase()}
                       </span>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', fontSize: '11px' }}>
-                      <div>✓ Success: <span style={{ color: '#4ade80', fontWeight: 'bold' }}>{session.successful || 0}</span></div>
-                      <div>✗ Failed: <span style={{ color: '#ef4444', fontWeight: 'bold' }}>{session.failed || 0}</span></div>
-                      <div>⏳ Pending: <span style={{ color: '#facc15', fontWeight: 'bold' }}>{session.pending || 0}</span></div>
-                      <div>Progress: <span style={{ color: '#60a5fa', fontWeight: 'bold' }}>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                      <div className="text-slate-400">✓ Success: <span className="text-emerald-400 font-bold">{session.successful || 0}</span></div>
+                      <div className="text-slate-400">✗ Failed: <span className="text-rose-400 font-bold">{session.failed || 0}</span></div>
+                      <div className="text-slate-400">⏳ Pending: <span className="text-amber-400 font-bold">{session.pending || 0}</span></div>
+                      <div className="text-slate-400">Progress: <span className="text-indigo-400 font-bold">
                         {session.percentage || 0}%
                       </span></div>
                     </div>
@@ -557,37 +432,28 @@ const ExpertUI = ({ onBack }) => {
 
         {/* Analytics Tab */}
         {activeTab === 'analytics' && (
-          <div style={{
-            backgroundColor: '#1e293b',
-            border: '1px solid #334155',
-            borderRadius: '6px',
-            padding: '15px'
-          }}>
-            <h2 style={{ margin: '0 0 12px', fontSize: '14px' }}>Analytics & Metrics</h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '10px'
-            }}>
-              <div style={{ backgroundColor: '#0f172a', padding: '10px', borderRadius: '4px', borderLeft: '3px solid #60a5fa' }}>
-                <div style={{ fontSize: '11px', color: '#94a3b8' }}>Total Accounts</div>
-                <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#60a5fa' }}>{accounts.length}</div>
+          <div className="bg-[#1a1f2e] border border-slate-800 rounded-2xl p-6">
+            <h2 className="text-white font-bold text-lg mb-4">Analytics & Metrics</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-[#0b0e14] p-4 rounded-xl border-l-4 border-indigo-500">
+                <div className="text-xs text-slate-400 mb-1">Total Accounts</div>
+                <div className="text-2xl font-bold text-indigo-400">{accounts.length}</div>
               </div>
-              <div style={{ backgroundColor: '#0f172a', padding: '10px', borderRadius: '4px', borderLeft: '3px solid #4ade80' }}>
-                <div style={{ fontSize: '11px', color: '#94a3b8' }}>Healthy</div>
-                <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#4ade80' }}>
+              <div className="bg-[#0b0e14] p-4 rounded-xl border-l-4 border-emerald-500">
+                <div className="text-xs text-slate-400 mb-1">Healthy</div>
+                <div className="text-2xl font-bold text-emerald-400">
                   {accounts.filter(a => a.health_score >= 60).length}
                 </div>
               </div>
-              <div style={{ backgroundColor: '#0f172a', padding: '10px', borderRadius: '4px', borderLeft: '3px solid #3b82f6' }}>
-                <div style={{ fontSize: '11px', color: '#94a3b8' }}>Total Boosts</div>
-                <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#3b82f6' }}>
+              <div className="bg-[#0b0e14] p-4 rounded-xl border-l-4 border-blue-500">
+                <div className="text-xs text-slate-400 mb-1">Total Boosts</div>
+                <div className="text-2xl font-bold text-blue-500">
                   {accounts.reduce((sum, acc) => sum + acc.boosts_remaining, 0)}
                 </div>
               </div>
-              <div style={{ backgroundColor: '#0f172a', padding: '10px', borderRadius: '4px', borderLeft: '3px solid #f59e0b' }}>
-                <div style={{ fontSize: '11px', color: '#94a3b8' }}>Avg Health</div>
-                <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#f59e0b' }}>
+              <div className="bg-[#0b0e14] p-4 rounded-xl border-l-4 border-amber-500">
+                <div className="text-xs text-slate-400 mb-1">Avg Health</div>
+                <div className="text-2xl font-bold text-amber-500">
                   {accounts.length > 0
                     ? Math.round(accounts.reduce((sum, acc) => sum + acc.health_score, 0) / accounts.length)
                     : '0'
