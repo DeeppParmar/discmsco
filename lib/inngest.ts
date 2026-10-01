@@ -42,7 +42,7 @@ type Events = {
   };
 };
 
-export const inngest = new Inngest<EventSchemas<Events>>({
+export const inngest = new Inngest({
   id: "discord-tools",
   eventKey: INNGEST_EVENT_KEY,
   baseUrl: process.env.INNGEST_BASE_URL,
@@ -52,11 +52,7 @@ export const inngest = new Inngest<EventSchemas<Events>>({
 export const checkTokenHandler = inngest.createFunction(
   {
     id: "check-token",
-    retryPolicy: {
-      initialDelayMs: 1000,
-      maxAttempts: 3,
-      multiplier: 1.5,
-    },
+    retries: 3,
   },
   { event: "discord/check.token" },
   async ({ event, step }) => {
@@ -201,11 +197,7 @@ export const checkTokenHandler = inngest.createFunction(
 export const completeQuestHandler = inngest.createFunction(
   {
     id: "complete-quest",
-    retryPolicy: {
-      initialDelayMs: 2000,
-      maxAttempts: 2,
-      multiplier: 2,
-    },
+    retries: 2,
   },
   { event: "discord/complete.quest" },
   async ({ event, step }) => {
@@ -281,11 +273,7 @@ export const completeQuestHandler = inngest.createFunction(
 export const claimQuestHandler = inngest.createFunction(
   {
     id: "claim-quest",
-    retryPolicy: {
-      initialDelayMs: 1000,
-      maxAttempts: 2,
-      multiplier: 2,
-    },
+    retries: 2,
   },
   { event: "discord/claim.quest" },
   async ({ event, step }) => {
@@ -357,11 +345,7 @@ export const claimQuestHandler = inngest.createFunction(
 export const checkNitroHandler = inngest.createFunction(
   {
     id: "check-nitro",
-    retryPolicy: {
-      initialDelayMs: 1000,
-      maxAttempts: 3,
-      multiplier: 1.5,
-    },
+    retries: 3,
   },
   { event: "discord/check.nitro" },
   async ({ event, step }) => {
